@@ -1,0 +1,99 @@
+.blue-side {
+    grid-area: blue-side;
+    background-color: blue;
+    display:grid;
+    grid-template-areas: 
+    'blue-summoner-1'
+    'blue-summoner-2'
+    'blue-summoner-3'
+    'blue-summoner-4'
+    'blue-summoner-5';
+    gap: 10px;
+    padding: 10px;
+}
+
+.blue-summoner-1 {
+    grid-area: blue-summoner-1;
+    background-color: yellow;
+}
+.blue-summoner-2 {
+    grid-area: blue-summoner-2;
+    background-color: yellow;
+}
+.blue-summoner-3 {
+    grid-area: blue-summoner-3;
+    background-color: yellow;
+}
+.blue-summoner-4 {
+    grid-area: blue-summoner-4;
+    background-color: yellow;
+}
+.blue-summoner-5 {
+    grid-area: blue-summoner-5;
+    background-color: yellow;
+}
+
+.red-side {
+    grid-area: red-side;
+    background-color: red;
+    display:grid;
+    grid-template-areas: 
+    'red-summoner-1'
+    'red-summoner-2'
+    'red-summoner-3'
+    'red-summoner-4'
+    'red-summoner-5';
+    gap: 10px;
+    padding: 10px;
+}
+
+.red-summoner-1 {
+    grid-area: red-summoner-1;
+    background-color: yellow;
+}
+.red-summoner-2 {
+    grid-area: red-summoner-2;
+    background-color: yellow;
+}
+.red-summoner-3 {
+    grid-area: red-summoner-3;
+    background-color: yellow;
+}
+.red-summoner-4 {
+    grid-area: red-summoner-4;
+    background-color: yellow;
+}
+.red-summoner-5 {
+    grid-area: red-summoner-5;
+    background-color: yellow;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 25% 50% 25%;
+    grid-template-areas: 
+    'blue-side champ-select red-side';
+    height: 100vh;
+    width: 100%;
+}
+
+.champ-select {
+    grid-area: champ-select;
+    background-color: aqua;
+
+
+}
+
+.champ-list{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.champion {
+    background-color: green;
+    width: 25%;
+    height: 136.5px;
+    
+}
