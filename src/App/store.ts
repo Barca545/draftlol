@@ -1,7 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import {combineReducers } from '@reduxjs/toolkit'
+import  blueDraftReducer from "./Slices/bluedraftSlice";
 
 export const store =  configureStore({
     reducer:{
+        blueDraft: blueDraftReducer
     },
   })
   

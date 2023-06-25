@@ -11,31 +11,45 @@
     gap: 10px;
     padding: 10px;
 }
-
 .blue-summoner-1 {
     grid-area: blue-summoner-1;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 .blue-summoner-2 {
     grid-area: blue-summoner-2;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 .blue-summoner-3 {
     grid-area: blue-summoner-3;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;    
 }
 .blue-summoner-4 {
     grid-area: blue-summoner-4;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 .blue-summoner-5 {
     grid-area: blue-summoner-5;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 
 .red-side {
@@ -55,36 +69,59 @@
 .blue-side-bans{
     grid-area: blue-side-bans;
     background-color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 .red-side-bans{
     grid-area: red-side-bans;
     background-color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .red-summoner-1 {
     grid-area: red-summoner-1;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 .red-summoner-2 {
     grid-area: red-summoner-2;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 .red-summoner-3 {
     grid-area: red-summoner-3;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 .red-summoner-4 {
     grid-area: red-summoner-4;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 .red-summoner-5 {
     grid-area: red-summoner-5;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
     background-color: yellow;
-    height: 155.2px;
 }
 
 .lock-button {
@@ -99,7 +136,7 @@
     display: grid;
     grid-template-rows: auto;
     grid-template-columns: 25% 50% 25%;
-    grid-template-rows: 10% 80% 10%;
+    grid-template-rows: 10% 75% 15%;
     grid-template-areas: 
     'blue-side lane-select red-side'
     'blue-side champ-select red-side'
@@ -140,4 +177,9 @@
 .champselect-image{
     height: 136.5px;
     width: 136.5px;
+}
+
+.ban-image{
+    height: 86px;
+    width: 86px;
 }
