@@ -1,8 +1,8 @@
 import { createSlice,PayloadAction} from '@reduxjs/toolkit'
 import { RootState } from '../store'
-import { BlueSummonerList } from '../Types/champ-select-types'
+import { DraftList } from '../Types/champ-select-types'
 
-const initialState:BlueSummonerList = {
+const initialState:DraftList = {
     banlist: [
         {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
@@ -22,10 +22,14 @@ const initialState:BlueSummonerList = {
 export const blueDraftSlice = createSlice({
     name: 'blueDraft',
     initialState: initialState,
-    reducers:{}
+    reducers:{
+        setBlueDraft: (state,action:PayloadAction<DraftList>) => {
+            state = action.payload
+        }
+    }
 })
 
-export const {} = blueDraftSlice.actions;
+export const {setBlueDraft} = blueDraftSlice.actions;
 export default blueDraftSlice.reducer;
 
 ///Selectors

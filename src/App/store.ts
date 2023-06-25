@@ -1,11 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import {combineReducers } from '@reduxjs/toolkit'
 import  blueDraftReducer from "./Slices/bluedraftSlice";
+import { apiSlice } from "./Slices/apiSlice";
 
 export const store =  configureStore({
     reducer:{
+        [apiSlice.reducerPath]: apiSlice.reducer,
         blueDraft: blueDraftReducer
     },
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
   })
   
    

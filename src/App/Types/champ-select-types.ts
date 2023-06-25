@@ -1,4 +1,4 @@
-interface Summoner {
+export interface Summoner {
     name:string|null,
     champ: string|null,
     icon: string
@@ -9,14 +9,10 @@ interface Ban {
     icon: string 
 }
 
-export interface BlueSummonerList{
+export interface DraftList{
     banlist: Ban[],
     summonerlist: Summoner[] 
     
-}
-
-export interface RedSummonerList{
-    summonerlist: Summoner[]      
 }
 
 export interface ChampSelection {

@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
-import { Draft } from './Pages/Draft';
+import { BlueDraft } from './Pages/BlueDraft';
 
 function App() {
   return (
-    <Draft/>  
+    <BlueDraft/>  
   );
 }
 

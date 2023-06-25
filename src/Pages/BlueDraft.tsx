@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import '../Pages/draft-styles.css'
 import { champlist } from './temp-champ-list'
-import { BlueSummonerList, ChampSelection } from '../App/Types/champ-select-types'
+import { DraftList } from '../App/Types/champ-select-types'
 import { useAppDispatch,useAppSelector } from '../App/hooks'
-import {getBlueDraftState} from '../App/Slices/bluedraftSlice'
+import {getBlueDraftState,setBlueDraft} from '../App/Slices/bluedraftSlice'
 
 /*
 need the champ select boxes to be constant size
@@ -15,21 +15,16 @@ somehow I made a fucking memory leak so fix that. might be in handle champ selec
 need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
 */
 
-export const Draft = () => {
+export const BlueDraft = () => {
   const [pickIndex,setPickIndex] = useState(0)
   const [banIndex,setBanIndex] = useState(0)
   const [blueList, setBlueList] = useState(useAppSelector(getBlueDraftState))
   const [banPhase,setBanPhase] = useState(true)
   const [blueTurn, setBlueTurn] = useState(true)
+  const dispatch = useAppDispatch()
   ///eventually use a websocket to control a turn bolean that disables all the buttons when off
 
   ///should only be able to do stuff when blue turn is true
-
-  /*
-  need to include a dependency to prevent infinite rerenders
-  eventully I probably want to make it dependent on changes to the whose turn check
-  */
-
 
   useEffect(()=>{
     if (banIndex == 3 && pickIndex < 3 ){setBanPhase(false)}
@@ -39,7 +34,7 @@ export const Draft = () => {
 
 
   const handleChampSelect = (item:string[]) => {
-    let templist:BlueSummonerList = {
+    let templist:DraftList = {
       banlist: [...blueList.banlist],
       summonerlist: [...blueList.summonerlist]
     }
@@ -58,12 +53,14 @@ export const Draft = () => {
       if (blueList.summonerlist[pickIndex].name != null) {
         setPickIndex(pickIndex+1)
         setBlueTurn(!blueTurn)
+        dispatch(setBlueDraft(blueList))
       }
     }
     else {
       if (blueList.banlist[banIndex].champ != null) {
         setBanIndex(banIndex+1)
         setBlueTurn(!blueTurn)}
+        dispatch(setBlueDraft(blueList))
     }
   }
 
@@ -86,7 +83,7 @@ export const Draft = () => {
        <input type='button' value={'TOP'}/>
        <input type='button' value={'JUNGLE'}/>
        <input type='button' value={'MIDDLE'}/>
-       <input type='button' value={'BOTTOM'}/>
+       <input type='button' value={'BOTTOM  '}/>
        <input type='button' value={'SUPPORT'}/>
        <input type='text' placeholder='Find Champion...'/>
       </div>
@@ -97,10 +94,10 @@ export const Draft = () => {
             <select>
               <option value="" disabled selected hidden>Select Role...</option>
               <option value='blue-top'>Top</option>
-              <option value='blue-top'>Jungle</option>
-              <option value='blue-top'>Middle</option>
-              <option value='blue-top'>Bottom</option>
-              <option value='blue-top'>Support</option>
+              <option value='blue-jg'>Jungle</option>
+              <option value='blue-mid'>Middle</option>
+              <option value='blue-adc'>Bottom</option>
+              <option value='blue-sup'>Support</option>
             </select>
           </div>
         </div>
@@ -110,10 +107,10 @@ export const Draft = () => {
             <select>
               <option value="" disabled selected hidden>Select Role...</option>
               <option value='blue-top'>Top</option>
-              <option value='blue-top'>Jungle</option>
-              <option value='blue-top'>Middle</option>
-              <option value='blue-top'>Bottom</option>
-              <option value='blue-top'>Support</option>
+              <option value='blue-jg'>Jungle</option>
+              <option value='blue-mid'>Middle</option>
+              <option value='blue-adc'>Bottom</option>
+              <option value='blue-sup'>Support</option>
             </select>
           </div>
         </div>
@@ -123,10 +120,10 @@ export const Draft = () => {
             <select>
               <option value="" disabled selected hidden>Select Role...</option>
               <option value='blue-top'>Top</option>
-              <option value='blue-top'>Jungle</option>
-              <option value='blue-top'>Middle</option>
-              <option value='blue-top'>Bottom</option>
-              <option value='blue-top'>Support</option>
+              <option value='blue-jg'>Jungle</option>
+              <option value='blue-mid'>Middle</option>
+              <option value='blue-adc'>Bottom</option>
+              <option value='blue-sup'>Support</option>
             </select>
           </div>
         </div>
@@ -136,10 +133,10 @@ export const Draft = () => {
             <select>
               <option value="" disabled selected hidden>Select Role...</option>
               <option value='blue-top'>Top</option>
-              <option value='blue-top'>Jungle</option>
-              <option value='blue-top'>Middle</option>
-              <option value='blue-top'>Bottom</option>
-              <option value='blue-top'>Support</option>
+              <option value='blue-jg'>Jungle</option>
+              <option value='blue-mid'>Middle</option>
+              <option value='blue-adc'>Bottom</option>
+              <option value='blue-sup'>Support</option>
             </select>
           </div>
         </div>
@@ -149,10 +146,10 @@ export const Draft = () => {
             <select>
               <option value="" disabled selected hidden>Select Role...</option>
               <option value='blue-top'>Top</option>
-              <option value='blue-top'>Jungle</option>
-              <option value='blue-top'>Middle</option>
-              <option value='blue-top'>Bottom</option>
-              <option value='blue-top'>Support</option>
+              <option value='blue-jg'>Jungle</option>
+              <option value='blue-mid'>Middle</option>
+              <option value='blue-adc'>Bottom</option>
+              <option value='blue-sup'>Support</option>
             </select>
           </div>
         </div>
