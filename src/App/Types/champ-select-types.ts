@@ -4,16 +4,24 @@ export interface Summoner {
     icon: string
 }
 
-interface Ban {
+export interface Ban {
     champ: string | null,
     icon: string 
 }
 
+export type Channel = string
+
+export interface DraftListRequest {
+    banlist: Ban[],
+    summonerlist: Summoner[]
+    channel: Channel
+}
+
 export interface DraftList{
     banlist: Ban[],
-    summonerlist: Summoner[] 
-    
+    summonerlist: Summoner[]
 }
+
 
 export interface ChampSelection {
     name: string,

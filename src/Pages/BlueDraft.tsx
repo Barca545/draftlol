@@ -4,6 +4,7 @@ import { champlist } from './temp-champ-list'
 import { DraftList } from '../App/Types/champ-select-types'
 import { useAppDispatch,useAppSelector } from '../App/hooks'
 import {getBlueDraftState,setBlueDraft} from '../App/Slices/bluedraftSlice'
+import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 
 /*
 need the champ select boxes to be constant size
@@ -13,12 +14,33 @@ three links (draft captains + spectator) \
 somehow I made a fucking memory leak so fix that. might be in handle champ select?
 
 need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
+
+-on confirm should send the matchlist to the store and to the websocket
 */
 
 export const BlueDraft = () => {
+  const BASE_URL: string = 'ws://localhost:8000'
+  const {sendJsonMessage, getWebsocket} = useWebSocket(BASE_URL, {
+    onOpen: () => console.log('connection opened'),
+    onClose: () => console.log('connection closed'),
+    shouldReconnect: (closeEvent) => true,
+    onMessage: (event:WebSocketEventMap['message']) => processMessages(event)})
+
+    const processMessages = (event: { data: string; }) => {
+      const response = JSON.parse(event.data);
+  
+      if (response.numLevels) {
+        dispatch(addExistingState(response));
+      } else {
+        process(response);
+      }
+    };
+  
+  const [blueList, setBlueList] = useState(useAppSelector(getBlueDraftState))
+  const [redlist,setRedlist] = useState(useAppSelector)
+  
   const [pickIndex,setPickIndex] = useState(0)
   const [banIndex,setBanIndex] = useState(0)
-  const [blueList, setBlueList] = useState(useAppSelector(getBlueDraftState))
   const [banPhase,setBanPhase] = useState(true)
   const [blueTurn, setBlueTurn] = useState(true)
   const dispatch = useAppDispatch()
