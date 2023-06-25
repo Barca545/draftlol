@@ -85,26 +85,76 @@ export const Draft = () => {
       <div className='lane-select'>
        <input type='button' value={'TOP'}/>
        <input type='button' value={'JUNGLE'}/>
-       <input type='button' value={'MID'}/>
-       <input type='button' value={'ADC'}/>
+       <input type='button' value={'MIDDLE'}/>
+       <input type='button' value={'BOTTOM'}/>
        <input type='button' value={'SUPPORT'}/>
        <input type='text' placeholder='Find Champion...'/>
       </div>
       <div className="blue-side">
         <div className='blue-summoner-1'>
           <img className='champselect-image' src={blueList.summonerlist[0].icon}/>
+          <div className='role-select'>
+            <select>
+              <option value="" disabled selected hidden>Select Role...</option>
+              <option value='blue-top'>Top</option>
+              <option value='blue-top'>Jungle</option>
+              <option value='blue-top'>Middle</option>
+              <option value='blue-top'>Bottom</option>
+              <option value='blue-top'>Support</option>
+            </select>
+          </div>
         </div>
         <div className='blue-summoner-2'>
           <img className='champselect-image' src={blueList.summonerlist[1].icon}/>
+          <div className='role-select'>
+            <select>
+              <option value="" disabled selected hidden>Select Role...</option>
+              <option value='blue-top'>Top</option>
+              <option value='blue-top'>Jungle</option>
+              <option value='blue-top'>Middle</option>
+              <option value='blue-top'>Bottom</option>
+              <option value='blue-top'>Support</option>
+            </select>
+          </div>
         </div>
         <div className='blue-summoner-3'>
           <img className='champselect-image' src={blueList.summonerlist[2].icon}/>
+          <div className='role-select'>
+            <select>
+              <option value="" disabled selected hidden>Select Role...</option>
+              <option value='blue-top'>Top</option>
+              <option value='blue-top'>Jungle</option>
+              <option value='blue-top'>Middle</option>
+              <option value='blue-top'>Bottom</option>
+              <option value='blue-top'>Support</option>
+            </select>
+          </div>
         </div>
         <div className='blue-summoner-4'>
           <img className='champselect-image' src={blueList.summonerlist[3].icon}/>
+          <div className='role-select'>
+            <select>
+              <option value="" disabled selected hidden>Select Role...</option>
+              <option value='blue-top'>Top</option>
+              <option value='blue-top'>Jungle</option>
+              <option value='blue-top'>Middle</option>
+              <option value='blue-top'>Bottom</option>
+              <option value='blue-top'>Support</option>
+            </select>
+          </div>
         </div>
         <div className='blue-summoner-5'>
           <img className='champselect-image' src={blueList.summonerlist[4].icon}/>
+          <div className='role-select'>
+            <select>
+              <option value="" disabled selected hidden>Select Role...</option>
+              <option value='blue-top'>Top</option>
+              <option value='blue-top'>Jungle</option>
+              <option value='blue-top'>Middle</option>
+              <option value='blue-top'>Bottom</option>
+              <option value='blue-top'>Support</option>
+            </select>
+          </div>
         </div>
       </div>
       <div className="champ-select">

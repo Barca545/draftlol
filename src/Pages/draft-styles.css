@@ -17,6 +17,7 @@
     align-items: center;
     justify-content: left;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .blue-summoner-2 {
@@ -25,6 +26,7 @@
     align-items: center;
     justify-content: left;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .blue-summoner-3 {
@@ -33,6 +35,7 @@
     align-items: center;
     justify-content: left;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .blue-summoner-4 {
@@ -41,6 +44,7 @@
     align-items: center;
     justify-content: left;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .blue-summoner-5 {
@@ -49,6 +53,7 @@
     align-items: center;
     justify-content: left;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 
@@ -150,7 +155,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 100px;
+    gap: 80px;
     background-color: purple;
     
 }
