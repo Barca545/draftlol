@@ -92,40 +92,45 @@
     grid-area: red-summoner-1;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: right;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .red-summoner-2 {
     grid-area: red-summoner-2;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: right;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .red-summoner-3 {
     grid-area: red-summoner-3;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: right;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .red-summoner-4 {
     grid-area: red-summoner-4;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: right;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 .red-summoner-5 {
     grid-area: red-summoner-5;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: right;
     height: 140px;
+    gap: 100px;
     background-color: yellow;
 }
 

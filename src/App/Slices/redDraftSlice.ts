@@ -19,20 +19,20 @@ const initialState:DraftList = {
     ] 
 }
 
-export const blueDraftSlice = createSlice({
-    name: 'blueDraft',
+export const redDraftSlice = createSlice({
+    name: 'redDraft',
     initialState: initialState,
     reducers:{
-        setBlueDraft: (state,action:PayloadAction<DraftList>) => {
+        setRedDraft: (state,action:PayloadAction<DraftList>) => {
             state = action.payload
         },
     }
 })
 
-export const {setBlueDraft} = blueDraftSlice.actions;
-export default blueDraftSlice.reducer;
+export const {setRedDraft} = redDraftSlice.actions;
+export default redDraftSlice.reducer;
 
 ///Selectors
-export const getBlueDraftState = (state:RootState) => {
-    return state.blueDraft
+export const getRedDraftState = (state:RootState) => {
+    return state.redDraft
 }
