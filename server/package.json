@@ -1,0 +1,24 @@
+{
+  "name": "draftlol-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc &&  node ./built/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "typescript": "^5.1.3",
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0"
+  },
+  
+  "devDependencies": {
+    "@types/uuid": "^9.0.2",
+    "@types/ws": "^8.5.5"
+  }
+}
