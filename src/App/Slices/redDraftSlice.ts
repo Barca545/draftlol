@@ -3,20 +3,35 @@ import { RootState } from '../store'
 import { DraftList } from '../Types/champ-select-types'
 
 const initialState:DraftList = {
-    banlist: [
+    blueBanlist: [
         {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
     ],
-    summonerlist: [
+    blueSummonerlist: [
         {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
         {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-    ] 
+    ],
+    redBanlist: [
+        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+    ],
+    redSummonerlist: [
+        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
+    ],
+    blueTurn: true
 }
 
 export const redDraftSlice = createSlice({

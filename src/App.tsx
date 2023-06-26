@@ -9,16 +9,7 @@ import { BASE_URL } from './App/Slices/baseurl';
 
 
 
-function App() {
-  const {sendMessage, lastMessage} = useWebSocket(BASE_URL, {
-    onOpen: () => console.log('connection opened'),
-    onClose: () => console.log('connection closed'),
-    /*shouldReconnect: (closeEvent) => true,
-    onMessage: (event:WebSocketEventMap['message']) => (event: { data: string; }) => {
-      const response:DraftList = JSON.parse(event.data);
-    }*/
-  })
-  
+function App() {  
   return (
     <BrowserRouter>
       <Routes>
