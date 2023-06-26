@@ -8,26 +8,24 @@ import { getRedDraftState } from '../App/Slices/redDraftSlice'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
+import { WebSocketMessage } from 'react-use-websocket/dist/lib/types'
 
 /*
-possibly may not even need Redux for this app
-need the champ select boxes to be constant size
-lock in/confirm button
-ban display
-three links (draft captains + spectator) \
-somehow I made a fucking memory leak so fix that. might be in handle champ select?
+-may not even need Redux for this app
+- three links (draft captains + spectator) \
+- somehow I made a fucking memory leak so fix that. might be in handle champ select?
 
-need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
+- need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
 
--on confirm should send the matchlist to the store and to the websocket
--
+- on confirm needs to update store and togle BlueTurn
+- Blue should be locked out unless BlueTurn is true
+- mousing over needs to send an updated list to the server 
+- something in the JSON is going wrong and causing redside to render blueside delayed by one message
 */
 
 export const BlueDraft = () => {
-  ///need to add a sender function to the frontend 
-
   ///configure to use wss instead of ws
-  ///lastJSONMessage refuses to work for some reason
+  const dispatch = useAppDispatch()
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
@@ -35,7 +33,9 @@ export const BlueDraft = () => {
     onMessage: (event:WebSocketEventMap['message']) => (event: { data: string; }) => {
       const response:DraftList = JSON.parse(event.data);
     }*/
-    share:true
+    share:true,
+    retryOnError: true,
+    shouldReconnect: () => true
   })
   
   const [blueSummonerList, setBlueSummonerList] = useState(useAppSelector(getBlueDraftState).blueSummonerlist)
@@ -46,11 +46,7 @@ export const BlueDraft = () => {
   const [pickIndex,setPickIndex] = useState(0)
   const [banIndex,setBanIndex] = useState(0)
   const [banPhase,setBanPhase] = useState(true)
-  ///I think blueTurn needs to be part of the draft list
   const [blueTurn, setBlueTurn] = useState(true)
-  const dispatch = useAppDispatch()
-  ///eventually use a websocket to control a turn bolean that disables all the buttons when off
-  ///should only be able to do stuff when blue turn is true
 
   useEffect(()=>{
     if (banIndex === 3 && pickIndex < 3 ){setBanPhase(false)}
@@ -68,8 +64,8 @@ export const BlueDraft = () => {
       let draftList:DraftList = {
         blueBanlist: blueBanList,
         blueSummonerlist: blueSummonerList,
-        redBanlist: blueBanList,
-        redSummonerlist: blueSummonerList,
+        redBanlist: redBanList,
+        redSummonerlist: redSummonerList,
         blueTurn: blueTurn
       }
       const draftListString = JSON.stringify(draftList)

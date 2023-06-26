@@ -2,38 +2,47 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var ws_1 = require("ws");
 var uuid_1 = require("uuid");
-var PORT = 8080;
-console.log("server running on ".concat(PORT));
-var wss = new ws_1.WebSocketServer({ port: PORT });
+var port_js_1 = require("./port.js");
+///Whenever a new client connects they need to be sent the current draftlist
+///figure out why ws.send() does not work inside 
+///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
+console.log("server running on ".concat(port_js_1.PORT));
+var wss = new ws_1.WebSocketServer({ port: port_js_1.PORT });
 var clients = {};
+///current draftlist state updated whenever a new message comes 
+var draftList = null;
 ///obviously have to confirm the logic here is what I want since I just copied it from the tutorial
-function broadcastMessage(json) {
-    ///I am not 100% positive the data comes in the form of a jSON
-    var data = JSON.stringify(json);
-    ///this sends the same info to all clients I want to only send it to the other 2
-    ///also want to make it so it flags the type of data being sent as red or blue
-    for (var userId in clients) {
-        var client = clients[userId];
-        if (client.readyState === WebSocket.OPEN) {
+function broadcastMessage(DraftList) {
+    var data = JSON.stringify(DraftList);
+    draftList = data;
+    for (var clientId in clients) {
+        var client = clients[clientId];
+        if (client.readyState === ws_1.WebSocket.OPEN) {
             client.send(data);
-            console.log(data);
+            console.log(draftList);
         }
     }
 }
 var handleMessage = function (message) {
-    var clientData = JSON.parse(message);
-    ///OK so the message needs to say who to send it to
-    console.log(clientData);
-    ///broadcastMessage(clientData)
+    var clientData = JSON.parse(message.toString());
+    ///console.log(clientData)
+    broadcastMessage(clientData);
 };
-wss.on('connection', function connection(ws) {
+wss.on('connection', function (ws) {
     ws.on('error', console.error);
     ///when the connection is established it needs to note which ID belongs to which side
     var clientId = (0, uuid_1.v4)();
-    clients[clientId] = connection;
+    clients[clientId] = ws;
     console.log("User ".concat(clientId, " connected"));
-    ///this might be redundant but it does confirm the server is getting the data
-    ws.on('message', function (data) {
-        handleMessage(data);
+    ws.on('message', function (message) {
+        handleMessage(message);
+    });
+    ws.on('close', function (event) {
+        var closeCode = event.code;
+        console.log(closeCode);
+        ///on connection send the draftlist
+        ws.on('open', function open() {
+            ws.send(draftList);
+        });
     });
 });
