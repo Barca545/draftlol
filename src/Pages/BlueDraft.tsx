@@ -5,6 +5,7 @@ import { DraftList } from '../App/Types/champ-select-types'
 import { useAppDispatch,useAppSelector } from '../App/hooks'
 import {getBlueDraftState,setBlueDraft} from '../App/Slices/blueDraftSlice'
 import { getRedDraftState } from '../App/Slices/redDraftSlice'
+import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 
 /*
@@ -23,14 +24,12 @@ need to add a thing to the champion list that prevents champs that have been pic
 export const BlueDraft = () => {
   ///Part of me thinks this should be sitting in a different file
   ///have to set the state of redlist equal to the response in onmessage
-  const BASE_URL: string = 'ws://localhost:8080/'
-  const {sendMessage, lastMessage} = useWebSocket(BASE_URL, {
-    onOpen: () => console.log('connection opened'),
-    onClose: () => console.log('connection closed'),
-    /*shouldReconnect: (closeEvent) => true,*/
-    onMessage: (event:WebSocketEventMap['message']) => (event: { data: string; }) => {
-      const response:DraftList = JSON.parse(event.data);
-    }
+  ///configure to use wss instead of ws
+  ///lastJSONMessage refuses to work for some reason
+  const {lastMessage} = useWebSocket(BASE_URL, {
+    ///shares connextion from app
+    share: true,
+    ///filter: isUserEvent
   })
   
   const [blueList, setBlueList] = useState(useAppSelector(getBlueDraftState))
@@ -50,6 +49,7 @@ export const BlueDraft = () => {
     else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
     ///this solves the problem with the JSON being undefined when it first loads
     ///however only triggers after the first champ is selected 
+    
     if (lastMessage?.data != undefined) {    
       const list:DraftList = JSON.parse(lastMessage?.data)
       setRedlist(list)
