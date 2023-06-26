@@ -10,6 +10,7 @@ import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
 import { WebSocketMessage } from 'react-use-websocket/dist/lib/types'
 
+///to remove selected champs can do the thing where I put the list in state and then remove all the ones that match the id
 /*
 -may not even need Redux for this app
 - three links (draft captains + spectator) \
@@ -203,68 +204,18 @@ export const BlueDraft = () => {
       </div>
       <div className="red-side">
         <div className='red-summoner-1'>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='red-top'>Top</option>
-              <option value='red-jg'>Jungle</option>
-              <option value='red-mid'>Middle</option>
-              <option value='red-adc'>Bottom</option>
-              <option value='red-sup'>Support</option>
-            </select>
-          </div>
           <img className='champselect-image' src={redSummonerList[0].icon} alt=''/>
         </div>
         <div className='red-summoner-2'>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='red-top'>Top</option>
-              <option value='red-jg'>Jungle</option>
-              <option value='red-mid'>Middle</option>
-              <option value='red-adc'>Bottom</option>
-              <option value='red-sup'>Support</option>
-            </select>
-          </div>
           <img className='champselect-image' src={redSummonerList[1].icon} alt=''/>
         </div>
         <div className='red-summoner-3'>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='red-top'>Top</option>
-              <option value='red-jg'>Jungle</option>
-              <option value='red-mid'>Middle</option>
-              <option value='red-adc'>Bottom</option>
-              <option value='red-sup'>Support</option>
-            </select>
-          </div>
           <img className='champselect-image' src={redSummonerList[2].icon} alt=''/>
         </div>
         <div className='red-summoner-4'>
-        <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='red-top'>Top</option>
-              <option value='red-jg'>Jungle</option>
-              <option value='red-mid'>Middle</option>
-              <option value='red-adc'>Bottom</option>
-              <option value='red-sup'>Support</option>
-            </select>
-          </div>
         <img className='champselect-image' src={redSummonerList[3].icon} alt=''/>   
         </div>
         <div className='red-summoner-5'>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='red-top'>Top</option>
-              <option value='red-jg'>Jungle</option>
-              <option value='red-mid'>Middle</option>
-              <option value='red-adc'>Bottom</option>
-              <option value='red-sup'>Support</option>
-            </select>
-          </div>
           <img className='champselect-image' src={redSummonerList[4].icon} alt=''/>
         </div>
       </div>

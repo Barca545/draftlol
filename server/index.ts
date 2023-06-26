@@ -11,7 +11,7 @@ import { PORT } from './port.js';
 ///currently the incomplete redDraft page is causing wonky things with bans so fix that and see if it persists
 ///shows the bans as red bans but for some reason the most recent one toggles on and off
 ///if i had to guess this is partially caused by the let draftList being wrong
-
+///current issue where new draft overwrites old one if someone joins the draft captain
 /*
  - couple possible ways to do this 
  1) clientside onOpen sends a request for data
