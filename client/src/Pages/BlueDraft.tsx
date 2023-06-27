@@ -11,8 +11,10 @@ import { WebSocketMessage } from 'react-use-websocket/dist/lib/types'
 
 /*
 - may not even need Redux for this app
+- need to add a timer
 - need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
-- something in the JSON is going wrong and causing redside to render blueside delayed by one message
+- why does it reset the draft on reconnect
+  - new draft initial state needs to come from the server
 */
 
 export const BlueDraft = () => {

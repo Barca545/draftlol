@@ -4,14 +4,13 @@ import {v4 as uuidv4} from 'uuid'
 import { DraftList } from './types/champ-select-types.js';
 import { Client } from './types/clients.js';
 import { PORT } from './port.js';
+import express, { Express, Request, Response } from 'express';
+import dotenv from 'dotenv';
 
 
-///Whenever a new client connects they need to be sent the current draftlist
-///figure out why ws.send() does not work inside 
+const server:Express = express()
+
 ///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
-///currently the incomplete redDraft page is causing wonky things with bans so fix that and see if it persists
-///shows the bans as red bans but for some reason the most recent one toggles on and off
-///if i had to guess this is partially caused by the let draftList being wrong
 ///current issue where new draft overwrites old one if someone joins the draft captain
 
 ///can use params to tell if red or blue
