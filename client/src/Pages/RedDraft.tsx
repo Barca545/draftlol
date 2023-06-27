@@ -1,9 +1,12 @@
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { useEffect, useState } from 'react'
+import { useGetDraftListQuery } from '../App/Slices/apiSlice'
 
 export const RedDraft = () => {
-  const {sendMessage, readyState} = useWebSocket(`${BASE_URL}/status?name=ryan`, {
+  const { data, error, isLoading } = useGetDraftListQuery('draftlist/')
+  
+  const {sendMessage, readyState} = useWebSocket(`${BASE_URL}/`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message) => {
@@ -18,15 +21,12 @@ export const RedDraft = () => {
     shouldReconnect: () => true
   })
 
-  
-
   const [newMessage,setNewMessage] = useState('')
 
   const handleMessage = () => {}
   return(
-    <>
-      <input type='button' value='test' onClick={()=>handleMessage()}/>
-      
-    </>
+    <div>
+      {error?(<>error</>): data?(<>{newMessage}</>):null}      
+    </div>
   )
 }

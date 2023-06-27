@@ -2,49 +2,43 @@ import {WebSocket, WebSocketServer,RawData} from 'ws';
 import RedList from './draftlistInitialState.js';
 import {v4 as uuidv4} from 'uuid'
 import { DraftList } from './types/champ-select-types.js';
-import { Client } from './types/clients.js';
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import http from 'http'
+import cors from 'cors'
 
 ///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
 ///current issue where new draft overwrites old one if someone joins the draft captain
 
-///can use params to tell if red or blue
-///red or blue have their own param and then it splits them into different client bodies based on that 
-///send only red info to red and only blue to blue
+///need to add an api to get the draft at the end
+///need to attach the summoner roles to the draftlist JSON
+///each new match needs to spin up a new server instance
+
 
 dotenv.config()
 
-const server:Express = express()
-const PORT = process.env.SERVER_PORT || 8080
+const app:Express = express()
+const port = process.env.SERVER_PORT || 8080
+app.use(cors())
 
-server.get('/draftlist', (req:Request, res:Response)=> {
-  res.send(draftList)
-})
-
-server.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
-});
-
-
-console.log(`server running on ${PORT}`)
-
-const wss = new WebSocketServer({ port:8080 });
-
-const clients = {}
+const server = http.createServer(app)
 
 ///current draftlist state updated whenever a new message comes 
 let draftList:string = JSON.stringify(RedList)
 
+const wss = new WebSocketServer({ server:server });
+
+const clients = {}
+
 ///obviously have to confirm the logic here is what I want since I just copied it from the tutorial
 function broadcastMessage(DraftList:DraftList) {
-  const data = JSON.stringify(DraftList)
-  draftList = data
+  const draftData = JSON.stringify(DraftList)
+  draftList = draftData
   for (let clientId in clients) {
     let client = clients[clientId]
     if (client.readyState === WebSocket.OPEN) {
       ///send queues information which explains why it isn't sending until the next message
-      client.send(data)
+      client.send(draftData)
     }
   }
 }
@@ -75,6 +69,15 @@ wss.on('connection', (ws:WebSocket,req) => {
   ws.on('close', (event:CloseEvent)=>{
     const closeCode = event.code
     console.log('close code')
-    console.log(closeCode)    
+    //console.log(closeCode)    
   })
+});
+
+///api endpoints would like to put them in a different folder at some point 
+app.get('/draftlist', (req:Request, res:Response)=> {
+  res.send(draftList)
+})
+
+server.listen(port, () => {
+  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });

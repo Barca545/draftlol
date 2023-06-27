@@ -2,23 +2,39 @@ import { useEffect, useState } from 'react'
 import '../Pages/draft-styles.css'
 import { champlist } from './temp-champ-list'
 import { DraftList} from '../App/Types/champ-select-types'
-import { useAppDispatch,useAppSelector } from '../App/hooks'
-import {getBlueDraftState, setBlueBans, setBlueSummoners} from '../App/Slices/blueDraftSlice'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
-import { WebSocketMessage } from 'react-use-websocket/dist/lib/types'
-
+import { useGetDraftListQuery } from '../App/Slices/apiSlice'
+import {pickList} from './draftlistInitialState'
 /*
 - may not even need Redux for this app
+  -I am using redux query
 - need to add a timer
 - need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
-- why does it reset the draft on reconnect
-  - new draft initial state needs to come from the server
+- need to redo CSS so it doesn't get fucked up when resized
 */
+
 
 export const BlueDraft = () => {
   ///configure to use wss instead of ws
+  const { data, error, isLoading, isSuccess} = useGetDraftListQuery('draftlist/')
+  
+  
+  useEffect(()=>{
+    ///on success update the new draft (below needs tweaking I think)
+    ///then I should be able to use newDraft instead of data in the component
+    if (isSuccess===true){  
+      setNewDraft(data)
+      console.log('updating data')
+      console.log(newDraft)
+    }
+    else{}
+  },[isSuccess,isLoading])
+  
+  const [newDraft, setNewDraft] = useState<DraftList>(pickList)
+  const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
+
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
@@ -32,9 +48,6 @@ export const BlueDraft = () => {
     retryOnError: true,
     shouldReconnect: () => true
   })
-  
-  const [newDraft, setNewDraft] = useState<DraftList>(useAppSelector(getBlueDraftState))
-  const [outgoingDraft, setOutgoingDraft] = useState(newDraft)
 
   const [pickIndex,setPickIndex] = useState(0)
   const [banIndex,setBanIndex] = useState(0)
@@ -46,7 +59,7 @@ export const BlueDraft = () => {
     else if (banIndex === 3 && pickIndex == 3 ){setBanPhase(true)}
     else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
     
-    if (readyState === ReadyState.OPEN) {    
+    if (readyState === ReadyState.OPEN && outgoingDraft!=null) {    
       ///need to make sure to update the blueturn state before sending
       sendMessage(JSON.stringify(outgoingDraft))
     }
@@ -55,7 +68,12 @@ export const BlueDraft = () => {
 
 
   const handleChampSelect = (item:string[]) => {
-    let draft = {
+    if(
+      newDraft.blueBanlist!=null
+      &&newDraft.blueSummonerlist!=null
+      &&newDraft.redBanlist!=null
+      &&newDraft.redSummonerlist!=null){
+      let draft = {
       blueBanlist: [...newDraft.blueBanlist],
       blueSummonerlist: [...newDraft.blueSummonerlist],
       redBanlist: [...newDraft.redBanlist],
@@ -71,18 +89,18 @@ export const BlueDraft = () => {
     else if (banPhase==true){
       draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
       setOutgoingDraft(draft)
-    }
+    }}
   }
 
   const handleConfirm = () => {
-    if (banPhase == false){
+    if (banPhase == false&&newDraft.blueSummonerlist!=null){
       if (newDraft.blueSummonerlist[pickIndex].name != null) {
         setPickIndex(pickIndex+1)
         setBlueTurn(!blueTurn)
         console.log(outgoingDraft)
       }
     }
-    else {
+    else if (newDraft.blueBanlist!=null) {
       if (newDraft.blueBanlist[banIndex].champ != null) {
         setBanIndex(banIndex+1)
         setBlueTurn(!blueTurn)
@@ -113,88 +131,121 @@ export const BlueDraft = () => {
       </div>
     )
   }
-  
-  return( 
-    <div className="grid-container">
-      <div className='lane-select'>
-       <input type='button' value={'TOP'}/>
-       <input type='button' value={'JUNGLE'}/>
-       <input type='button' value={'MIDDLE'}/>
-       <input type='button' value={'BOTTOM  '}/>
-       <input type='button' value={'SUPPORT'}/>
-       <input type='text' placeholder='Find Champion...'/>
-      </div>
-      <div className="blue-side">
-        <div className='blue-summoner-1'>
-          <img className='champselect-image' src={newDraft.blueSummonerlist[0].icon} alt=''/>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='blue-top'>Top</option>
-              <option value='blue-jg'>Jungle</option>
-              <option value='blue-mid'>Middle</option>
-              <option value='blue-adc'>Bottom</option>
-              <option value='blue-sup'>Support</option>
-            </select>
+  const RoleSelect = () => {
+    return(
+      <div className='role-select'>
+        <select>
+          <option value="" disabled selected hidden>Select Role...</option>
+          <option value='blue-top'>Top</option>
+          <option value='blue-jg'>Jungle</option>
+          <option value='blue-mid'>Middle</option>
+          <option value='blue-adc'>Bottom</option>
+          <option value='blue-sup'>Support</option>
+        </select>
+    </div>
+    )
+  }
+  const BlueSideDraft = () => {
+    if (isLoading){
+      return(<></>)
+    }
+    if (isSuccess) {
+      return(
+        <div className="blue-side">
+          <div className='blue-summoner-1'>
+            <img className='champselect-image' src={newDraft.blueSummonerlist[0].icon} alt=''/>
+            <RoleSelect/>
+          </div>
+          <div className='blue-summoner-2'>
+            <img className='champselect-image' src={newDraft.blueSummonerlist[1].icon} alt=''/>
+            <RoleSelect/>
+          </div>
+          <div className='blue-summoner-3'>
+            <img className='champselect-image' src={newDraft.blueSummonerlist[2].icon} alt=''/>
+            <RoleSelect/>
+          </div>
+          <div className='blue-summoner-4'>
+            <img className='champselect-image' src={newDraft.blueSummonerlist[3].icon} alt=''/>   
+            <RoleSelect/>
+          </div>
+          <div className='blue-summoner-5'>
+            <img className='champselect-image' src={newDraft.blueSummonerlist[4].icon} alt=''/>
+            <RoleSelect/>
           </div>
         </div>
-        <div className='blue-summoner-2'>
-          <img className='champselect-image' src={newDraft.blueSummonerlist[1].icon} alt=''/>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='blue-top'>Top</option>
-              <option value='blue-jg'>Jungle</option>
-              <option value='blue-mid'>Middle</option>
-              <option value='blue-adc'>Bottom</option>
-              <option value='blue-sup'>Support</option>
-            </select>
-          </div>
+      )
+    }
+    else{
+      return(<></>)
+    }
+  }
+  const BlueSideBans = () => {
+    if (isLoading){
+      return(<></>)
+    }
+    else if (isSuccess){
+      return(
+        <div className='blue-side-bans'>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.blueBanlist[0].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.blueBanlist[1].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.blueBanlist[2].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.blueBanlist[3].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.blueBanlist[4].icon} alt=''/>
+          </span>
         </div>
-        <div className='blue-summoner-3'>
-          <img className='champselect-image' src={newDraft.blueSummonerlist[2].icon} alt=''/>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='blue-top'>Top</option>
-              <option value='blue-jg'>Jungle</option>
-              <option value='blue-mid'>Middle</option>
-              <option value='blue-adc'>Bottom</option>
-              <option value='blue-sup'>Support</option>
-            </select>
-          </div>
+      )}
+    else{
+      return(null)
+    }
+    
+  }
+
+  const RedSideBans = () => {
+    if (isLoading){
+      return(<></>)
+    }
+    else if (isSuccess){
+      return(
+        <div className='red-side-bans'>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.redBanlist[4].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.redBanlist[3].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.redBanlist[2].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.redBanlist[1].icon} alt=''/>
+          </span>
+          <span className='ban-image-wrapper'>
+            <img className='ban-image' src={newDraft.redBanlist[0].icon} alt=''/>
+          </span>
         </div>
-        <div className='blue-summoner-4'>
-          <img className='champselect-image' src={newDraft.blueSummonerlist[3].icon} alt=''/>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='blue-top'>Top</option>
-              <option value='blue-jg'>Jungle</option>
-              <option value='blue-mid'>Middle</option>
-              <option value='blue-adc'>Bottom</option>
-              <option value='blue-sup'>Support</option>
-            </select>
-          </div>
-        </div>
-        <div className='blue-summoner-5'>
-          <img className='champselect-image' src={newDraft.blueSummonerlist[4].icon} alt=''/>
-          <div className='role-select'>
-            <select>
-              <option value="" disabled selected hidden>Select Role...</option>
-              <option value='blue-top'>Top</option>
-              <option value='blue-jg'>Jungle</option>
-              <option value='blue-mid'>Middle</option>
-              <option value='blue-adc'>Bottom</option>
-              <option value='blue-sup'>Support</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div className="champ-select">
-        <ChampList/>
-      </div>
-      <div className="red-side">
+      )}
+    else{
+      return(null)
+    }
+    
+  }
+
+  const RedSideDraft = () => {
+    if (isLoading){
+      return(<></>)
+    }
+    if (isSuccess) {
+      return(
+        <div className="red-side">
         <div className='red-summoner-1'>
           <img className='champselect-image' src={newDraft.redSummonerlist[0].icon} alt=''/>
         </div>
@@ -211,40 +262,30 @@ export const BlueDraft = () => {
           <img className='champselect-image' src={newDraft.redSummonerlist[4].icon} alt=''/>
         </div>
       </div>
-      <div className='blue-side-bans'>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.blueBanlist[0].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.blueBanlist[1].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.blueBanlist[2].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.blueBanlist[3].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.blueBanlist[4].icon} alt=''/>
-        </span>
+      )
+    }
+    else{
+      return(<></>)
+    }
+  }
+
+  return( 
+    <div className="grid-container">
+      <div className='lane-select'>
+       <input type='button' value={'TOP'}/>
+       <input type='button' value={'JUNGLE'}/>
+       <input type='button' value={'MIDDLE'}/>
+       <input type='button' value={'BOTTOM  '}/>
+       <input type='button' value={'SUPPORT'}/>
+       <input type='text' placeholder='Find Champion...'/>
       </div>
-      <div className='red-side-bans'>
-      <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.redBanlist[4].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.redBanlist[3].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.redBanlist[2].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.redBanlist[1].icon} alt=''/>
-        </span>
-        <span className='ban-image-wrapper'>
-          <img className='ban-image' src={newDraft.redBanlist[0].icon} alt=''/>
-        </span>
+      <BlueSideDraft/>
+      <RedSideDraft/>
+      <div className="champ-select">
+        <ChampList/>
       </div>
+      <BlueSideBans/>
+      <RedSideBans/>
       <div className='lock-button'>
         <input className='confirm-button' type='button' value={'confirm'} onClick={()=>handleConfirm()}/>
       </div>
