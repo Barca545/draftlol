@@ -1,21 +1,29 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var ws_1 = require("ws");
-var draftlistInitialState_js_1 = require("./draftlistInitialState.js");
+var draftlistInitialState_js_1 = __importDefault(require("./draftlistInitialState.js"));
 var uuid_1 = require("uuid");
-var port_js_1 = require("./port.js");
-///Whenever a new client connects they need to be sent the current draftlist
-///figure out why ws.send() does not work inside 
+var express_1 = __importDefault(require("express"));
+var dotenv_1 = __importDefault(require("dotenv"));
 ///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
-///currently the incomplete redDraft page is causing wonky things with bans so fix that and see if it persists
-///shows the bans as red bans but for some reason the most recent one toggles on and off
-///if i had to guess this is partially caused by the let draftList being wrong
 ///current issue where new draft overwrites old one if someone joins the draft captain
 ///can use params to tell if red or blue
 ///red or blue have their own param and then it splits them into different client bodies based on that 
 ///send only red info to red and only blue to blue
-console.log("server running on ".concat(port_js_1.PORT));
-var wss = new ws_1.WebSocketServer({ port: port_js_1.PORT });
+dotenv_1.default.config();
+var server = (0, express_1.default)();
+var PORT = process.env.SERVER_PORT || 8080;
+server.get('/draftlist', function (req, res) {
+    res.send(draftList);
+});
+server.listen(PORT, function () {
+    console.log("\u26A1\uFE0F[server]: Server is running at http://localhost:".concat(PORT));
+});
+console.log("server running on ".concat(PORT));
+var wss = new ws_1.WebSocketServer({ port: 8080 });
 var clients = {};
 ///current draftlist state updated whenever a new message comes 
 var draftList = JSON.stringify(draftlistInitialState_js_1.default);
@@ -27,9 +35,7 @@ function broadcastMessage(DraftList) {
         var client = clients[clientId];
         if (client.readyState === ws_1.WebSocket.OPEN) {
             ///send queues information which explains why it isn't sending until the next message
-            console.log('sending');
             client.send(data);
-            ///console.log(draftList)
         }
     }
 }

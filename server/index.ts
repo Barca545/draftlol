@@ -3,12 +3,8 @@ import RedList from './draftlistInitialState.js';
 import {v4 as uuidv4} from 'uuid'
 import { DraftList } from './types/champ-select-types.js';
 import { Client } from './types/clients.js';
-import { PORT } from './port.js';
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-
-
-const server:Express = express()
 
 ///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
 ///current issue where new draft overwrites old one if someone joins the draft captain
@@ -16,9 +12,24 @@ const server:Express = express()
 ///can use params to tell if red or blue
 ///red or blue have their own param and then it splits them into different client bodies based on that 
 ///send only red info to red and only blue to blue
+
+dotenv.config()
+
+const server:Express = express()
+const PORT = process.env.SERVER_PORT || 8080
+
+server.get('/draftlist', (req:Request, res:Response)=> {
+  res.send(draftList)
+})
+
+server.listen(PORT, () => {
+  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+});
+
+
 console.log(`server running on ${PORT}`)
 
-const wss = new WebSocketServer({ port:PORT });
+const wss = new WebSocketServer({ port:8080 });
 
 const clients = {}
 
