@@ -12,9 +12,9 @@ var http_1 = __importDefault(require("http"));
 var cors_1 = __importDefault(require("cors"));
 ///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
 ///current issue where new draft overwrites old one if someone joins the draft captain
-///can use params to tell if red or blue
-///red or blue have their own param and then it splits them into different client bodies based on that 
-///send only red info to red and only blue to blue
+///need to add an api to get the draft at the end
+///need to attach the summoner roles to the draftlist JSON
+///each new match needs to spin up a new server instance
 dotenv_1.default.config();
 var app = (0, express_1.default)();
 var port = process.env.SERVER_PORT || 8080;
