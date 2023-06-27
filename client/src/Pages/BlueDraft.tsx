@@ -33,6 +33,7 @@ export const BlueDraft = () => {
   
   const [newDraft, setNewDraft] = useState<DraftList>(pickList)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
+  const [currentSelection, setCurrentSelection] = useState(['',''])
 
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
@@ -67,6 +68,7 @@ export const BlueDraft = () => {
 
 
   const handleChampSelect = (item:string[]) => {
+    setCurrentSelection(item)
     if(
       newDraft.blueBanlist!=null
       &&newDraft.blueSummonerlist!=null
@@ -95,6 +97,9 @@ export const BlueDraft = () => {
     ///handleConfirm needs to change the color/make it so the champ can't be picked
     ///one way to do this is to search champlist 
     ///for the champ name and replace it with a div that is grey and lacks the handle champ select on click
+    const champIndex = champlist.indexOf(currentSelection)
+    champlist.splice(champIndex, 1)
+    
     if (banPhase == false&&newDraft.blueSummonerlist!=null){
       if (newDraft.blueSummonerlist[pickIndex].name != null) {
         setPickIndex(pickIndex+1)
