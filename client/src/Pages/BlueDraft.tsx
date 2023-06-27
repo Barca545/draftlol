@@ -92,6 +92,9 @@ export const BlueDraft = () => {
   }
 
   const handleConfirm = () => {
+    ///handleConfirm needs to change the color/make it so the champ can't be picked
+    ///one way to do this is to search champlist 
+    ///for the champ name and replace it with a div that is grey and lacks the handle champ select on click
     if (banPhase == false&&newDraft.blueSummonerlist!=null){
       if (newDraft.blueSummonerlist[pickIndex].name != null) {
         setPickIndex(pickIndex+1)
