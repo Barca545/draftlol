@@ -7,9 +7,11 @@ import { ReadyState } from 'react-use-websocket'
 import { useGetDraftListQuery } from '../App/Slices/apiSlice'
 import {draftList} from '../App/InitialStates/initialDraftList'
 import { Timer } from '../App/Types/timer-types'
+import { CountdownTimer } from '../Components/timer'
+
 
 export const RedDraft = () => {
-  ///configure to use wss instead of ws
+
   const { data, error, isLoading, isSuccess} = useGetDraftListQuery('draftlist/')
   
   useEffect(()=>{
@@ -38,7 +40,6 @@ export const RedDraft = () => {
   const [pickIndex,setPickIndex] = useState(0)
   const [banIndex,setBanIndex] = useState(0)
   const [banPhase,setBanPhase] = useState(true)
-  const [blueTurn, setBlueTurn] = useState(true)
   
   useEffect(()=>{
     if (banIndex === 3 && pickIndex < 3 ){setBanPhase(false)}
@@ -46,11 +47,11 @@ export const RedDraft = () => {
     else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
     
     if (readyState === ReadyState.OPEN && outgoingDraft!=null) {    
-      ///need to make sure to update the blueturn state before sending
       sendMessage(JSON.stringify(outgoingDraft))
+      console.log(outgoingDraft.blueTurn)
     }
     ///do I want sendMessage in the dependencies
-  },[blueTurn, readyState, outgoingDraft])
+  },[readyState, outgoingDraft])
 
   const handleConfirm = () => {
     if (currentSelection!=null){
@@ -61,24 +62,22 @@ export const RedDraft = () => {
         blueSummonerlist: [...newDraft.blueSummonerlist],
         redBanlist: [...newDraft.redBanlist],
         redSummonerlist: [...newDraft.redSummonerlist],
-        blueTurn: blueTurn,
+        blueTurn: true,
         champList: newChampList,
         time: newDraft.time
       }
       setNewDraft(newDraftList)
-      setOutgoingDraft(newDraftList)
+      setOutgoingDraft(newDraftList)  
     }
     
     if (banPhase == false&&newDraft.blueSummonerlist!=null){
       if (newDraft.blueSummonerlist[pickIndex].name != null) {
         setPickIndex(pickIndex+1)
-        setBlueTurn(!blueTurn)
       }
     }
     else if (newDraft.blueBanlist!=null) {
       if (newDraft.blueBanlist[banIndex].champ != null) {
         setBanIndex(banIndex+1)
-        setBlueTurn(!blueTurn)
       }
     }
   }
@@ -97,18 +96,18 @@ export const RedDraft = () => {
         blueSummonerlist: [...newDraft.blueSummonerlist],
         redBanlist: [...newDraft.redBanlist],
         redSummonerlist: [...newDraft.redSummonerlist],
-        blueTurn: blueTurn,
+        blueTurn: newDraft.blueTurn,
         champList: [...newDraft.champList],
         time: newDraft.time ///this may not work without the ...
       }
   
       if (banPhase==false) {
-        draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
+        draft.redSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
   
       }
       else if (banPhase==true){
-        draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
+        draft.redBanlist[banIndex] = {champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
       }}
     }
@@ -116,7 +115,7 @@ export const RedDraft = () => {
     return(
       <div className='champ-list'>
         {newDraft.champList.map((item)=>{
-          if (blueTurn===true){
+          if (newDraft.blueTurn===false){
             return(
               <div 
                 className='champion' 
@@ -261,7 +260,7 @@ export const RedDraft = () => {
         </div>
         <div className='red-summoner-4'>
           <RoleSelect/>
-          <img className='champselect-image' src={newDraft.redSummonerlist[3].icon} alt=''/>   
+        <img className='champselect-image' src={newDraft.redSummonerlist[3].icon} alt=''/>   
         </div>
         <div className='red-summoner-5'>
           <RoleSelect/>
@@ -275,48 +274,22 @@ export const RedDraft = () => {
     }
   }
 
-  const CountdownTimer = ({minutes=0,seconds=0}:Timer) => {
-    ///when timer is 0 useEffect to set the Blue turn
-    ///probably need to mirror time on the server
-    const [time, setTime] = useState<Timer>({minutes,seconds})
-
-    ///const reset = () => setTime({minutes: time.minutes, seconds: time.seconds});
-  
-    const tick = () => {
-      if (time.minutes === 0 && time.seconds === 0) {
-        setTime({minutes: 0, seconds: 0})
-      }
-      else if (time.seconds===0) {
-        setTime({minutes: time.minutes-1, seconds: 59})
-      }
-      else {
-        setTime({minutes: time.minutes, seconds: time.seconds-1})
-      }
-    }
-
-    useEffect(() => {
-      const timerId = setInterval(() => tick(), 1000);
-      ///what does clear/set Interval do
-      return () => clearInterval(timerId)
-    })
-
-    return (
-      <div className='count-down'>
-        <p>{`${time.minutes.toString().padStart(2, '0')}:${time.seconds.toString().padStart(2, '0')}`}</p> 
-      </div>
+  const LaneSelect = () => {
+    return(
+      <div className='lane-select'>
+      <input type='button' value={'TOP'}/>
+      <input type='button' value={'JUNGLE'}/>
+      <input type='button' value={'MIDDLE'}/>
+      <input type='button' value={'BOTTOM  '}/>
+      <input type='button' value={'SUPPORT'}/>
+      <input type='text' placeholder='Find Champion...'/>
+     </div>
     )
   }
 
   return( 
     <div className="grid-container">
-      <div className='lane-select'>
-       <input type='button' value={'TOP'}/>
-       <input type='button' value={'JUNGLE'}/>
-       <input type='button' value={'MIDDLE'}/>
-       <input type='button' value={'BOTTOM  '}/>
-       <input type='button' value={'SUPPORT'}/>
-       <input type='text' placeholder='Find Champion...'/>
-      </div>
+      <LaneSelect/>
       <CountdownTimer minutes={0} seconds={60}/>
       <BlueSideDraft/>
       <RedSideDraft/>

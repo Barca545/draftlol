@@ -1,3 +1,4 @@
+/* need to update the styles so the formating persists */
 .blue-side {
     grid-area: blue-side;
     background-color: blue;
@@ -155,12 +156,14 @@
     width: 100%;
 }
 
-.count-down{
+.timer{
     grid-area: count-down;
     display:flex;
     justify-content: center;
     align-items: center;
-    background-color: crimson;
+    background-color: cornsilk;
+    font-size: 200%;
+    font-weight: 700;
 }
 
 .lane-select{

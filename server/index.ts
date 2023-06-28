@@ -1,5 +1,6 @@
 import {WebSocket, WebSocketServer,RawData} from 'ws';
-import draftList from './initialStates/initialDraftList.js';
+import {initialDraftList}
+ from './initialStates/initialDraftList.js';
 import {v4 as uuidv4} from 'uuid'
 import { DraftList } from './types/champ-select-types.js';
 import express, { Express, Request, Response } from 'express';
@@ -24,7 +25,9 @@ app.use(cors())
 const server = http.createServer(app)
 
 ///current draftlist state updated whenever a new message comes 
-let draftListstring:string = JSON.stringify(draftList)
+let draftListstring:string = JSON.stringify(initialDraftList)
+///need to update draftList wherever it pops up to 
+let draftList = initialDraftList
 
 const wss = new WebSocketServer({ server:server });
 
@@ -45,7 +48,10 @@ function broadcastMessage(DraftList:DraftList) {
 
 const handleMessage = (message:RawData) => {
   const clientData:DraftList = JSON.parse(message.toString())
+  ///eventuall I think I need to change the scope of draftList when I make this support multiple websockets
+  draftList = clientData
   broadcastMessage(clientData)
+  console.log(clientData.blueTurn)
 }
 
 wss.on('connection', (ws:WebSocket,req) => {
@@ -68,8 +74,6 @@ wss.on('connection', (ws:WebSocket,req) => {
 
   ws.on('close', (event:CloseEvent)=>{
     const closeCode = event.code
-    console.log('close code')
-    //console.log(closeCode)    
   })
 });
 
