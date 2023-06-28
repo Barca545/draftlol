@@ -10,14 +10,12 @@ export interface Ban {
 }
 
 export interface DraftList{
-    ///targets: uuids of the other clients
-    banlist: Ban[],
-    summonerlist: Summoner[],
-    blueTurn: boolean
+    blueBanlist: Ban[],
+    blueSummonerlist: Summoner[],
+    redBanlist: Ban[],
+    redSummonerlist: Summoner[],
+    blueTurn: boolean,
+    champList: string[][],
+    time:number
 }
 
-
-export interface ChampSelection {
-    name: string,
-    icon: string
-}

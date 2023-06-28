@@ -15,7 +15,9 @@ export interface DraftList{
     blueSummonerlist: Summoner[],
     redBanlist: Ban[],
     redSummonerlist: Summoner[],
-    blueTurn: boolean
+    blueTurn: boolean,
+    champList: string[][],
+    time: number,
 }
 
 

@@ -1,39 +1,31 @@
 import { useEffect, useState } from 'react'
 import '../Pages/draft-styles.css'
-import { champlist } from './temp-champ-list'
 import { DraftList} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
 import { useGetDraftListQuery } from '../App/Slices/apiSlice'
-import {pickList} from './draftlistInitialState'
+import {draftList} from '../App/InitialStates/initialDraftList'
 import { Timer } from '../App/Types/timer-types'
 /*
 - need to add a timer
-- need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
 - need to redo CSS so it doesn't get fucked up when resized
 */
-
 
 export const BlueDraft = () => {
   ///configure to use wss instead of ws
   const { data, error, isLoading, isSuccess} = useGetDraftListQuery('draftlist/')
   
-  
   useEffect(()=>{
-    ///on success update the new draft (below needs tweaking I think)
-    ///then I should be able to use newDraft instead of data in the component
-    if (isSuccess===true){  
+    if (isSuccess===true && data.champList!=undefined){  
       setNewDraft(data)
-      console.log('updating data')
-      console.log(newDraft)
     }
     else{}
-  },[isSuccess,isLoading])
+  },[isSuccess])
   
-  const [newDraft, setNewDraft] = useState<DraftList>(pickList)
+  const [newDraft, setNewDraft] = useState<DraftList>(draftList)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
-  const [currentSelection, setCurrentSelection] = useState(['',''])
+  const [currentSelection, setCurrentSelection] = useState<string[]|null>(null)
 
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
@@ -41,8 +33,6 @@ export const BlueDraft = () => {
     onMessage: (message:WebSocketEventMap['message']) => {
       const response:DraftList = JSON.parse(message.data);
       setNewDraft(response)
-      ///why is this logging two times
-      ///console.log(newDraft)
     },
     share:true, ///maybe share should be false
     retryOnError: true,
@@ -64,65 +54,78 @@ export const BlueDraft = () => {
       sendMessage(JSON.stringify(outgoingDraft))
     }
     ///do I want sendMessage in the dependencies
-  },[blueTurn, sendMessage, readyState, outgoingDraft])
-
-
-  const handleChampSelect = (item:string[]) => {
-    setCurrentSelection(item)
-    if(
-      newDraft.blueBanlist!=null
-      &&newDraft.blueSummonerlist!=null
-      &&newDraft.redBanlist!=null
-      &&newDraft.redSummonerlist!=null){
-      let draft = {
-      blueBanlist: [...newDraft.blueBanlist],
-      blueSummonerlist: [...newDraft.blueSummonerlist],
-      redBanlist: [...newDraft.redBanlist],
-      redSummonerlist: [...newDraft.redSummonerlist],
-      blueTurn: blueTurn
-    }
-
-    if (banPhase==false) {
-      draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
-      setOutgoingDraft(draft)
-
-    }
-    else if (banPhase==true){
-      draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
-      setOutgoingDraft(draft)
-    }}
-  }
+  },[blueTurn, readyState, outgoingDraft])
 
   const handleConfirm = () => {
-    ///handleConfirm needs to change the color/make it so the champ can't be picked
-    ///one way to do this is to search champlist 
-    ///for the champ name and replace it with a div that is grey and lacks the handle champ select on click
-    const champIndex = champlist.indexOf(currentSelection)
-    champlist.splice(champIndex, 1)
+    if (currentSelection!=null){
+      const newChampList = newDraft.champList.filter((item)=>item[0]!=currentSelection[0])
+      
+        const newDraftList = {
+        blueBanlist: [...newDraft.blueBanlist],
+        blueSummonerlist: [...newDraft.blueSummonerlist],
+        redBanlist: [...newDraft.redBanlist],
+        redSummonerlist: [...newDraft.redSummonerlist],
+        blueTurn: blueTurn,
+        champList: newChampList,
+        time: newDraft.time
+      }
+      setNewDraft(newDraftList)
+      setOutgoingDraft(newDraftList)
+    }
     
     if (banPhase == false&&newDraft.blueSummonerlist!=null){
       if (newDraft.blueSummonerlist[pickIndex].name != null) {
         setPickIndex(pickIndex+1)
         setBlueTurn(!blueTurn)
-        console.log(outgoingDraft)
       }
     }
     else if (newDraft.blueBanlist!=null) {
       if (newDraft.blueBanlist[banIndex].champ != null) {
         setBanIndex(banIndex+1)
         setBlueTurn(!blueTurn)
-        console.log(outgoingDraft)
       }
     }
   }
 
   const ChampList = () => {
+    const handleChampSelect = (item:string[]) => {  
+      setCurrentSelection(item)
+      if(
+        newDraft.blueBanlist!=null
+        &&newDraft.blueSummonerlist!=null
+        &&newDraft.redBanlist!=null
+        &&newDraft.redSummonerlist!=null){
+        
+        let draft:DraftList = {
+        blueBanlist: [...newDraft.blueBanlist],
+        blueSummonerlist: [...newDraft.blueSummonerlist],
+        redBanlist: [...newDraft.redBanlist],
+        redSummonerlist: [...newDraft.redSummonerlist],
+        blueTurn: blueTurn,
+        champList: [...newDraft.champList],
+        time: newDraft.time ///this may not work without the ...
+      }
+  
+      if (banPhase==false) {
+        draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
+        setOutgoingDraft(draft)
+  
+      }
+      else if (banPhase==true){
+        draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
+        setOutgoingDraft(draft)
+      }}
+    }
+      
     return(
       <div className='champ-list'>
-        {champlist.map((item)=>{
+        {newDraft.champList.map((item)=>{
           if (blueTurn===true){
             return(
-              <div className='champion' key={item[0]} id={item[0]} onClick={()=>handleChampSelect(item)}>
+              <div 
+                className='champion' 
+                key={item[0]} id={item[0]} 
+                onClick={()=>{handleChampSelect(item)}}>
                 <img src={item[1]} alt=''/>
               </div>
             )
@@ -280,7 +283,7 @@ export const BlueDraft = () => {
     ///when timer is 0 useEffect to set the Blue turn
     ///probably need to mirror time on the server
     const [time, setTime] = useState<Timer>({minutes,seconds})
-  
+
     ///const reset = () => setTime({minutes: time.minutes, seconds: time.seconds});
   
     const tick = () => {

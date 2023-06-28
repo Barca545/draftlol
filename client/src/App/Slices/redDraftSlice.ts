@@ -1,38 +1,9 @@
 import { createSlice,PayloadAction} from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import { DraftList } from '../Types/champ-select-types'
+import {draftList} from '../../App//InitialStates/initialDraftList'
 
-const initialState:DraftList = {
-    blueBanlist: [
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-    ],
-    blueSummonerlist: [
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-    ],
-    redBanlist: [
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-    ],
-    redSummonerlist: [
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-        {name:null,champ:null,icon:'https://draftlol.dawe.gg/rectangle.png'},
-    ],
-    blueTurn: true
-}
+const initialState:DraftList = draftList
 
 export const redDraftSlice = createSlice({
     name: 'redDraft',

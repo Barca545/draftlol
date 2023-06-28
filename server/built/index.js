@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var ws_1 = require("ws");
-var draftlistInitialState_js_1 = __importDefault(require("./draftlistInitialState.js"));
+var initialDraftList_js_1 = __importDefault(require("./initialStates/initialDraftList.js"));
 var uuid_1 = require("uuid");
 var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
@@ -21,13 +21,13 @@ var port = process.env.SERVER_PORT || 8080;
 app.use((0, cors_1.default)());
 var server = http_1.default.createServer(app);
 ///current draftlist state updated whenever a new message comes 
-var draftList = JSON.stringify(draftlistInitialState_js_1.default);
+var draftListstring = JSON.stringify(initialDraftList_js_1.default);
 var wss = new ws_1.WebSocketServer({ server: server });
 var clients = {};
 ///obviously have to confirm the logic here is what I want since I just copied it from the tutorial
 function broadcastMessage(DraftList) {
     var draftData = JSON.stringify(DraftList);
-    draftList = draftData;
+    draftListstring = draftData;
     for (var clientId in clients) {
         var client = clients[clientId];
         if (client.readyState === ws_1.WebSocket.OPEN) {
@@ -46,7 +46,7 @@ wss.on('connection', function (ws, req) {
     //const url = new URL(req.url, `http://${req.headers.host}`);
     ///console.log(url)
     ///send the draftList here
-    ws.send(draftList);
+    ws.send(draftListstring);
     ///when the connection is established it needs to note which ID belongs to which side
     var clientId = (0, uuid_1.v4)();
     clients[clientId] = ws;
@@ -62,7 +62,7 @@ wss.on('connection', function (ws, req) {
 });
 ///api endpoints would like to put them in a different folder at some point 
 app.get('/draftlist', function (req, res) {
-    res.send(draftList);
+    res.send(initialDraftList_js_1.default);
 });
 server.listen(port, function () {
     console.log("\u26A1\uFE0F[server]: Server is running at http://localhost:".concat(port));

@@ -1,5 +1,5 @@
 import {WebSocket, WebSocketServer,RawData} from 'ws';
-import RedList from './draftlistInitialState.js';
+import draftList from './initialStates/initialDraftList.js';
 import {v4 as uuidv4} from 'uuid'
 import { DraftList } from './types/champ-select-types.js';
 import express, { Express, Request, Response } from 'express';
@@ -24,7 +24,7 @@ app.use(cors())
 const server = http.createServer(app)
 
 ///current draftlist state updated whenever a new message comes 
-let draftList:string = JSON.stringify(RedList)
+let draftListstring:string = JSON.stringify(draftList)
 
 const wss = new WebSocketServer({ server:server });
 
@@ -33,7 +33,7 @@ const clients = {}
 ///obviously have to confirm the logic here is what I want since I just copied it from the tutorial
 function broadcastMessage(DraftList:DraftList) {
   const draftData = JSON.stringify(DraftList)
-  draftList = draftData
+  draftListstring = draftData
   for (let clientId in clients) {
     let client = clients[clientId]
     if (client.readyState === WebSocket.OPEN) {
@@ -55,7 +55,7 @@ wss.on('connection', (ws:WebSocket,req) => {
   ///console.log(url)
 
   ///send the draftList here
-  ws.send(draftList)
+  ws.send(draftListstring)
 
   ///when the connection is established it needs to note which ID belongs to which side
   const clientId = uuidv4()
