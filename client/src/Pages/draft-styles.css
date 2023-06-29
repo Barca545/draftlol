@@ -169,11 +169,17 @@
     grid-area: champ-select;
     background-color: aqua;
     display: grid;
-    grid-template-rows: 15% 85%;
+    grid-template-rows: 10% 90%;
     grid-template-areas: 
-    'lane-select'
-    'champ-list';
+    'lane-select search-bar'
+    'champ-list champ-list';
 }
+
+.search-bar{
+    grid-area: search-bar;
+    background-color: rgb(202, 178, 202);
+        
+ }
 
 .lane-select{
     grid-area: lane-select;

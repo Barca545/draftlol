@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import '../Pages/draft-styles.css'
 import { DraftList} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
@@ -21,8 +21,7 @@ export const BlueDraft = () => {
   
   const [newDraft, setNewDraft] = useState<DraftList>(initialDraftList)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
-  const [currentSelection, setCurrentSelection] = useState<string[]|null>(null)  
-  
+  const [currentSelection, setCurrentSelection] = useState<string[]|null>(null) 
 
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
@@ -49,7 +48,6 @@ export const BlueDraft = () => {
     if (readyState === ReadyState.OPEN && outgoingDraft!==null) {    
 
       sendMessage(JSON.stringify(outgoingDraft))
-      console.log(outgoingDraft.blueTurn)
     }
   },[readyState, outgoingDraft])
 
@@ -88,9 +86,21 @@ export const BlueDraft = () => {
     }
   }
 
+
   const ChampSelect = () => {
-    const [champList,setChampList] = useState(newDraft.champList)
-    const [searchResults, setSearchResults] = useState<string[][]|null>(null);
+    const [champList,setChampList] = useState(newDraft.champList) 
+    const [input,setInput] = useState('')
+    const [laneView,setLaneView] = useState('ALL  ')
+    
+    useEffect(()=>{
+      setChampList(newDraft.champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))
+    },[input])
+
+    const handleSearch = (search:any) => {
+      setInput(search)
+      setChampList(champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))
+      console.log(input)
+    }
 
     const LaneSelect = () => {     
       return(
@@ -101,21 +111,9 @@ export const BlueDraft = () => {
           <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList)}}/>
           <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList)}}/>
           <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList)}}/>
-          <SearchBar/>
        </div>
       )
     }
-    
-    const SearchBar = () => {
-      const [query, setQuery] = useState("");
-
-      const matches = newDraft.champList.filter(array => array[0].toLowerCase().includes(query.toLowerCase()));
-      console.log(matches)
-      ///setSearchResults(matches)
-
-      return(
-        <input type='text' placeholder='Find Champion...' value={query} onChange={(e)=>setQuery(e.target.value)}/>
-      )}
 
     const handleChampSelect = (item:string[]) => {  
       setCurrentSelection(item)
@@ -151,11 +149,10 @@ export const BlueDraft = () => {
       }}
     }
     
-    const ChampList = () => {
+    const ChampList = (props:{champList:string[][]}) => {
       return(
-        <div className='champ-select'>
-          <LaneSelect/>
           <div className='champ-list'>
+            
           {champList.map((item)=>{
             if (blueTurn===true){
               return(
@@ -177,18 +174,22 @@ export const BlueDraft = () => {
             }
           })}
           </div>
-        </div>
+        
       )
     }
     return (
-      <ChampList/>
+      <div className='champ-select'>
+        <input className='search-bar' type='text'  placeholder='Find Champion...' value={input} onChange={(e)=>{handleSearch(e.target.value)}}/>
+        <LaneSelect/>
+        <ChampList champList={champList}/>
+      </div>
     )
   }
   const RoleSelect = () => {
     return(
       <div className='role-select'>
         <select>
-          <option value="" disabled selected hidden>Select Role...</option>
+          <option defaultValue=''>Select Role...</option>
           <option value='blue-top'>Top</option>
           <option value='blue-jg'>Jungle</option>
           <option value='blue-mid'>Middle</option>
