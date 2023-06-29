@@ -146,10 +146,9 @@
 .grid-container {
     display: grid;
     grid-template-columns: 25% 50% 25%;
-    grid-template-rows: 10% 10% 70% 10%;
+    grid-template-rows: 10% 80% 10%;
     grid-template-areas: 
     'blue-side count-down red-side'
-    'blue-side lane-select red-side'
     'blue-side champ-select red-side'
     'blue-side-bans lock-button red-side-bans';
     height: 100vh;
@@ -166,23 +165,27 @@
     font-weight: 700;
 }
 
+.champ-select {
+    grid-area: champ-select;
+    background-color: aqua;
+    display: grid;
+    grid-template-rows: 15% 85%;
+    grid-template-areas: 
+    'lane-select'
+    'champ-list';
+}
+
 .lane-select{
     grid-area: lane-select;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 80px;
+    gap: 1%;
     background-color: purple;
-    
-}
-
-.champ-select {
-    grid-area: champ-select;
-    background-color: aqua;
-    display: flex;
 }
 
 .champ-list{
+    grid-area: champ-list;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;

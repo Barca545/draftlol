@@ -4,34 +4,25 @@ import { DraftList} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
-import { useGetDraftListQuery } from '../App/Slices/apiSlice'
-import {draftList} from '../App/InitialStates/initialDraftList'
-import { Timer } from '../App/Types/timer-types'
-/*
-- need to add a timer
-- need to add a thing to the champion list that prevents champs that have been picked/baned from being selected
-- need to redo CSS so it doesn't get fucked up when resized
-*/
+import { useGetListQuery } from '../App/Slices/apiSlice'
+import {initialDraftList} from '../App/InitialStates/initialDraftList'
+import { CountdownTimer } from '../Components/CountdownTimer'
 
 
 export const SpectatorDraft = () => {
-  ///configure to use wss instead of ws
-  const { data, error, isLoading, isSuccess} = useGetDraftListQuery('draftlist/')
+  const { data, error, isLoading, isSuccess} = useGetListQuery('draftlist/')
   
   useEffect(()=>{
-    ///on success update the new draft (below needs tweaking I think)
-    ///then I should be able to use newDraft instead of data in the component
-    if (isSuccess===true){  
+    if (isSuccess===true && data.champList!==undefined){  
       setNewDraft(data)
-      console.log('updating data')
-      console.log(newDraft)
     }
     else{}
-  },[isSuccess,isLoading])
+  },[isSuccess])
   
-  const [newDraft, setNewDraft] = useState<DraftList>(draftList)
+  const [newDraft, setNewDraft] = useState<DraftList>(initialDraftList)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
-  const [currentSelection, setCurrentSelection] = useState(['',''])
+  const [currentSelection, setCurrentSelection] = useState<string[]|null>(null)
+  const [champlist,setChampList] = useState(newDraft.champList)
 
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
@@ -39,8 +30,6 @@ export const SpectatorDraft = () => {
     onMessage: (message:WebSocketEventMap['message']) => {
       const response:DraftList = JSON.parse(message.data);
       setNewDraft(response)
-      ///why is this logging two times
-      ///console.log(newDraft)
     },
     share:true, ///maybe share should be false
     retryOnError: true,
@@ -57,99 +46,45 @@ export const SpectatorDraft = () => {
     else if (banIndex === 3 && pickIndex == 3 ){setBanPhase(true)}
     else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
     
-    if (readyState === ReadyState.OPEN && outgoingDraft!=null) {    
+    if (readyState === ReadyState.OPEN && outgoingDraft!==null) {    
       ///need to make sure to update the blueturn state before sending
       sendMessage(JSON.stringify(outgoingDraft))
+      console.log(outgoingDraft.blueTurn)
     }
     ///do I want sendMessage in the dependencies
-  },[blueTurn, sendMessage, readyState, outgoingDraft])
-
-
-  const handleChampSelect = (item:string[]) => {
-    setCurrentSelection(item)
-    if(
-      newDraft.blueBanlist!=null
-      &&newDraft.blueSummonerlist!=null
-      &&newDraft.redBanlist!=null
-      &&newDraft.redSummonerlist!=null){
-      let draft:DraftList = {
-      blueBanlist: [...newDraft.blueBanlist],
-      blueSummonerlist: [...newDraft.blueSummonerlist],
-      redBanlist: [...newDraft.redBanlist],
-      redSummonerlist: [...newDraft.redSummonerlist],
-      blueTurn: blueTurn,
-      champList: [...newDraft.champList],
-      time: newDraft.time ///this may not work without the ...
-    }
-
-    if (banPhase==false) {
-      draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
-      setOutgoingDraft(draft)
-
-    }
-    else if (banPhase==true){
-      draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
-      setOutgoingDraft(draft)
-    }}
-  }
-
-  const handleConfirm = () => {
-    ///champ list needs to be stored on the server and I need to somehow add this to the websocket
-    const champIndex = newDraft.champList.indexOf(currentSelection)
-    newDraft.champList.splice(champIndex, 1)
-    
-    if (banPhase == false&&newDraft.blueSummonerlist!=null){
-      if (newDraft.blueSummonerlist[pickIndex].name != null) {
-        setPickIndex(pickIndex+1)
-        setBlueTurn(!blueTurn)
-        console.log(outgoingDraft)
-      }
-    }
-    else if (newDraft.blueBanlist!=null) {
-      if (newDraft.blueBanlist[banIndex].champ != null) {
-        setBanIndex(banIndex+1)
-        setBlueTurn(!blueTurn)
-        console.log(outgoingDraft)
-      }
-    }
-  }
+  },[readyState, outgoingDraft])
 
   const ChampList = () => {
+    const [champList,setChampList] = useState(newDraft.champList)
+
+    const LaneSelect = () => {     
+      return(
+        <div className='lane-select'>
+          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList)}}/>
+          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList)}}/>
+          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList)}}/>
+          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList)}}/>
+          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList)}}/>
+          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList)}}/>
+          <input type='text' placeholder='Find Champion...'/>
+       </div>
+      )
+    }  
+
     return(
-      <div className='champ-list'>
-        {newDraft.champList.map((item)=>{
-          if (blueTurn===true){
-            return(
-              <div className='champion' key={item[0]} id={item[0]} onClick={()=>handleChampSelect(item)}>
-                <img src={item[1]} alt=''/>
-              </div>
-            )
-          }
-          else {
-            return(
-              <div className='champion' key={item[0]} id={item[0]}>
-                <img src={item[1]} alt=''/>
-              </div>
-            )
-          }
-        })}
+      <div className='champ-select'>
+        <LaneSelect/>
+        <div className='champ-list'>
+          {champList.map((item)=>{
+              return(
+                <div className='champion' key={item[0]} id={item[0]}>
+                  <img src={item[1]} alt=''/>
+                </div>)})}
+        </div>
       </div>
     )
   }
-  const RoleSelect = () => {
-    return(
-      <div className='role-select'>
-        <select>
-          <option value="" disabled selected hidden>Select Role...</option>
-          <option value='blue-top'>Top</option>
-          <option value='blue-jg'>Jungle</option>
-          <option value='blue-mid'>Middle</option>
-          <option value='blue-adc'>Bottom</option>
-          <option value='blue-sup'>Support</option>
-        </select>
-    </div>
-    )
-  }
+
   const BlueSideDraft = () => {
     if (isLoading){
       return(<></>)
@@ -159,23 +94,18 @@ export const SpectatorDraft = () => {
         <div className="blue-side">
           <div className='blue-summoner-1'>
             <img className='champselect-image' src={newDraft.blueSummonerlist[0].icon} alt=''/>
-            <RoleSelect/>
           </div>
           <div className='blue-summoner-2'>
             <img className='champselect-image' src={newDraft.blueSummonerlist[1].icon} alt=''/>
-            <RoleSelect/>
           </div>
           <div className='blue-summoner-3'>
             <img className='champselect-image' src={newDraft.blueSummonerlist[2].icon} alt=''/>
-            <RoleSelect/>
           </div>
           <div className='blue-summoner-4'>
             <img className='champselect-image' src={newDraft.blueSummonerlist[3].icon} alt=''/>   
-            <RoleSelect/>
           </div>
           <div className='blue-summoner-5'>
             <img className='champselect-image' src={newDraft.blueSummonerlist[4].icon} alt=''/>
-            <RoleSelect/>
           </div>
         </div>
       )
@@ -213,7 +143,6 @@ export const SpectatorDraft = () => {
     }
     
   }
-
   const RedSideBans = () => {
     if (isLoading){
       return(<></>)
@@ -274,59 +203,15 @@ export const SpectatorDraft = () => {
     }
   }
 
-  const CountdownTimer = ({minutes=0,seconds=0}:Timer) => {
-    ///when timer is 0 useEffect to set the Blue turn
-    ///probably need to mirror time on the server
-    const [time, setTime] = useState<Timer>({minutes,seconds})
-  
-    ///const reset = () => setTime({minutes: time.minutes, seconds: time.seconds});
-  
-    const tick = () => {
-      if (time.minutes === 0 && time.seconds === 0) {
-        setTime({minutes: 0, seconds: 0})
-      }
-      else if (time.seconds===0) {
-        setTime({minutes: time.minutes-1, seconds: 59})
-      }
-      else {
-        setTime({minutes: time.minutes, seconds: time.seconds-1})
-      }
-    }
-
-    useEffect(() => {
-      const timerId = setInterval(() => tick(), 1000);
-      ///what does clear/set Interval do
-      return () => clearInterval(timerId)
-    })
-
-    return (
-      <div className='count-down'>
-        <p>{`${time.minutes.toString().padStart(2, '0')}:${time.seconds.toString().padStart(2, '0')}`}</p> 
-      </div>
-    )
-  }
-
   return( 
     <div className="grid-container">
-      <div className='lane-select'>
-       <input type='button' value={'TOP'}/>
-       <input type='button' value={'JUNGLE'}/>
-       <input type='button' value={'MIDDLE'}/>
-       <input type='button' value={'BOTTOM  '}/>
-       <input type='button' value={'SUPPORT'}/>
-       <input type='text' placeholder='Find Champion...'/>
-      </div>
-      <CountdownTimer minutes={0} seconds={60}/>
+      <CountdownTimer reset={newDraft.ResetTimer} minutes={0} seconds={60}/>
       <BlueSideDraft/>
       <RedSideDraft/>
-      <div className="champ-select">
-        <ChampList/>
-      </div>
+      <ChampList/>
       <BlueSideBans/>
       <RedSideBans/>
-      <div className='lock-button'>
-        <input className='confirm-button' type='button' value={'confirm'} onClick={()=>handleConfirm()}/>
-      </div>
+      <div className='lock-button'/>
     </div>
   )
 }

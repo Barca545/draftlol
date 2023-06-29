@@ -17,7 +17,12 @@ export interface DraftList{
     redSummonerlist: Summoner[],
     blueTurn: boolean,
     champList: string[][],
-    time: number,
+    topList:string[][],
+    jgList:string[][],
+    midList:string[][],
+    bottomList:string[][],
+    supportList:string[][],
+    ResetTimer: boolean,
 }
 
 

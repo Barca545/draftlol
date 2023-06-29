@@ -4,26 +4,24 @@ import { DraftList} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
-import { useGetDraftListQuery } from '../App/Slices/apiSlice'
-import {draftList} from '../App/InitialStates/initialDraftList'
-import { Timer } from '../App/Types/timer-types'
-import { CountdownTimer } from '../Components/timer'
-
+import { useGetListQuery} from '../App/Slices/apiSlice'
+import {initialDraftList} from '../App/InitialStates/initialDraftList'
+import { CountdownTimer } from '../Components/CountdownTimer'
 
 export const RedDraft = () => {
+  const {data:draftData, error:draftError, isLoading:draftIsLoading, isSuccess:draftIsSuccess} = useGetListQuery('draftlist/')
 
-  const { data, error, isLoading, isSuccess} = useGetDraftListQuery('draftlist/')
-  
   useEffect(()=>{
-    if (isSuccess===true && data.champList!=undefined){  
-      setNewDraft(data)
+    if (draftIsSuccess===true && draftData.champList!==undefined){  
+      setNewDraft(draftData)
     }
     else{}
-  },[isSuccess])
+  },[draftIsSuccess])
   
-  const [newDraft, setNewDraft] = useState<DraftList>(draftList)
+  const [newDraft, setNewDraft] = useState<DraftList>(initialDraftList)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [currentSelection, setCurrentSelection] = useState<string[]|null>(null)
+  const [champlist,setChampList] = useState({lane:'ALL',list:newDraft.champList})
 
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
@@ -46,17 +44,17 @@ export const RedDraft = () => {
     else if (banIndex === 3 && pickIndex == 3 ){setBanPhase(true)}
     else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
     
-    if (readyState === ReadyState.OPEN && outgoingDraft!=null) {    
+    if (readyState === ReadyState.OPEN && outgoingDraft!==null) {    
       sendMessage(JSON.stringify(outgoingDraft))
       console.log(outgoingDraft.blueTurn)
     }
-    ///do I want sendMessage in the dependencies
   },[readyState, outgoingDraft])
 
   const handleConfirm = () => {
-    if (currentSelection!=null){
-      const newChampList = newDraft.champList.filter((item)=>item[0]!=currentSelection[0])
-      
+    ///use a post request to send an updated champlist to the server
+
+    if (currentSelection!==null){
+    const newChampList = newDraft.champList.filter((item)=>item[0]!==currentSelection[0])
         const newDraftList = {
         blueBanlist: [...newDraft.blueBanlist],
         blueSummonerlist: [...newDraft.blueSummonerlist],
@@ -64,57 +62,85 @@ export const RedDraft = () => {
         redSummonerlist: [...newDraft.redSummonerlist],
         blueTurn: true,
         champList: newChampList,
-        time: newDraft.time
+        topList: [...newDraft.topList.filter((item)=>item[0]!==currentSelection[0])],
+        jgList:[...newDraft.jgList.filter((item)=>item[0]!==currentSelection[0])],
+        midList:[...newDraft.midList.filter((item)=>item[0]!==currentSelection[0])],
+        bottomList:[...newDraft.bottomList.filter((item)=>item[0]!==currentSelection[0])],
+        supportList:[...newDraft.supportList.filter((item)=>item[0]!==currentSelection[0])],
+        ResetTimer: newDraft.ResetTimer
       }
       setNewDraft(newDraftList)
       setOutgoingDraft(newDraftList)  
     }
     
-    if (banPhase == false&&newDraft.blueSummonerlist!=null){
-      if (newDraft.blueSummonerlist[pickIndex].name != null) {
+    if (banPhase == false&&newDraft.blueSummonerlist!==null){
+      if (newDraft.blueSummonerlist[pickIndex].name !==null) {
         setPickIndex(pickIndex+1)
       }
     }
-    else if (newDraft.blueBanlist!=null) {
-      if (newDraft.blueBanlist[banIndex].champ != null) {
+    else if (newDraft.blueBanlist!==null) {
+      if (newDraft.blueBanlist[banIndex].champ!==null) {
         setBanIndex(banIndex+1)
       }
     }
   }
 
-  const ChampList = () => {
+  const ChampSelect = () => {
+    const [champList,setChampList] = useState(newDraft.champList)
+
+    const LaneSelect = () => {     
+      return(
+        <div className='lane-select'>
+          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList)}}/>
+          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList)}}/>
+          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList)}}/>
+          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList)}}/>
+          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList)}}/>
+          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList)}}/>
+          <input type='text' placeholder='Find Champion...'/>
+       </div>
+      )
+    }
     const handleChampSelect = (item:string[]) => {  
       setCurrentSelection(item)
+      console.log(item)
       if(
-        newDraft.blueBanlist!=null
-        &&newDraft.blueSummonerlist!=null
-        &&newDraft.redBanlist!=null
-        &&newDraft.redSummonerlist!=null){
+        newDraft.blueBanlist!==null
+        &&newDraft.blueSummonerlist!==null
+        &&newDraft.redBanlist!==null
+        &&newDraft.redSummonerlist!==null){
         
         let draft:DraftList = {
-        blueBanlist: [...newDraft.blueBanlist],
-        blueSummonerlist: [...newDraft.blueSummonerlist],
-        redBanlist: [...newDraft.redBanlist],
-        redSummonerlist: [...newDraft.redSummonerlist],
-        blueTurn: newDraft.blueTurn,
-        champList: [...newDraft.champList],
-        time: newDraft.time ///this may not work without the ...
+          blueBanlist: [...newDraft.blueBanlist],
+          blueSummonerlist: [...newDraft.blueSummonerlist],
+          redBanlist: [...newDraft.redBanlist],
+          redSummonerlist: [...newDraft.redSummonerlist],
+          blueTurn: newDraft.blueTurn,
+          champList: [...newDraft.champList],
+          topList:[...newDraft.topList],
+          jgList:[...newDraft.jgList],
+          midList:[...newDraft.midList],
+          bottomList:[...newDraft.bottomList],
+          supportList:[...newDraft.supportList],
+          ResetTimer: newDraft.ResetTimer
       }
   
       if (banPhase==false) {
-        draft.redSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
+        draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
   
       }
       else if (banPhase==true){
-        draft.redBanlist[banIndex] = {champ:item[0],icon:item[1]}
+        draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
       }}
     }
       
     return(
-      <div className='champ-list'>
-        {newDraft.champList.map((item)=>{
+      <div className='champ-select'>
+        <LaneSelect/>
+        <div className='champ-list'>
+        {champList.map((item)=>{
           if (newDraft.blueTurn===false){
             return(
               <div 
@@ -127,15 +153,18 @@ export const RedDraft = () => {
           }
           else {
             return(
-              <div className='champion' key={item[0]} id={item[0]}>
+              <div className='champion' 
+              key={item[0]} id={item[0]}>
                 <img src={item[1]} alt=''/>
               </div>
             )
           }
         })}
       </div>
+      </div>
     )
   }
+
   const RoleSelect = () => {
     return(
       <div className='role-select'>
@@ -151,10 +180,11 @@ export const RedDraft = () => {
     )
   }
   const BlueSideDraft = () => {
-    if (isLoading){
+    if (draftIsLoading){
       return(<></>)
+
     }
-    if (isSuccess) {
+    if (draftIsSuccess) {
       return(
         <div className="blue-side">
           <div className='blue-summoner-1'>
@@ -180,10 +210,10 @@ export const RedDraft = () => {
     }
   }
   const BlueSideBans = () => {
-    if (isLoading){
+    if (draftIsLoading){
       return(<></>)
     }
-    else if (isSuccess){
+    else if (draftIsSuccess){
       return(
         <div className='blue-side-bans'>
           <span className='ban-image-wrapper'>
@@ -210,10 +240,10 @@ export const RedDraft = () => {
   }
 
   const RedSideBans = () => {
-    if (isLoading){
+    if (draftIsLoading){
       return(<></>)
     }
-    else if (isSuccess){
+    else if (draftIsSuccess){
       return(
         <div className='red-side-bans'>
           <span className='ban-image-wrapper'>
@@ -240,10 +270,10 @@ export const RedDraft = () => {
   }
 
   const RedSideDraft = () => {
-    if (isLoading){
+    if (draftIsLoading){
       return(<></>)
     }
-    if (isSuccess) {
+    if (draftIsSuccess) {
       return(
         <div className="red-side">
         <div className='red-summoner-1'>
@@ -274,32 +304,18 @@ export const RedDraft = () => {
     }
   }
 
-  const LaneSelect = () => {
-    return(
-      <div className='lane-select'>
-      <input type='button' value={'TOP'}/>
-      <input type='button' value={'JUNGLE'}/>
-      <input type='button' value={'MIDDLE'}/>
-      <input type='button' value={'BOTTOM  '}/>
-      <input type='button' value={'SUPPORT'}/>
-      <input type='text' placeholder='Find Champion...'/>
-     </div>
-    )
-  }
+  ///possibly should be inside of the champlist but that requires redoing CSS (gross)
 
   return( 
     <div className="grid-container">
-      <LaneSelect/>
-      <CountdownTimer minutes={0} seconds={60}/>
+      <CountdownTimer reset={newDraft.ResetTimer} minutes={0} seconds={60}/>
       <BlueSideDraft/>
       <RedSideDraft/>
-      <div className="champ-select">
-        <ChampList/>
-      </div>
+      <ChampSelect/>
       <BlueSideBans/>
       <RedSideBans/>
       <div className='lock-button'>
-        <input className='confirm-button' type='button' value={'confirm'} onClick={()=>handleConfirm()}/>
+        <input className='confirm-button' type='button' value={'LOCK'} onClick={()=>handleConfirm()}/>
       </div>
     </div>
   )

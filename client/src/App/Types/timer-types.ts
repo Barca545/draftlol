@@ -1,4 +1,5 @@
 export interface Timer {
     minutes:number,
-    seconds:number
+    seconds:number,
+    reset:boolean,
   }

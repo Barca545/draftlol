@@ -7,6 +7,7 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import http from 'http'
 import cors from 'cors'
+import bodyParser from 'body-parser';
 
 ///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
 ///current issue where new draft overwrites old one if someone joins the draft captain
@@ -21,12 +22,13 @@ dotenv.config()
 const app:Express = express()
 const port = process.env.SERVER_PORT || 8080
 app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
 
 const server = http.createServer(app)
 
 ///current draftlist state updated whenever a new message comes 
 let draftListstring:string = JSON.stringify(initialDraftList)
-///need to update draftList wherever it pops up to 
 let draftList = initialDraftList
 
 const wss = new WebSocketServer({ server:server });
@@ -51,14 +53,10 @@ const handleMessage = (message:RawData) => {
   ///eventuall I think I need to change the scope of draftList when I make this support multiple websockets
   draftList = clientData
   broadcastMessage(clientData)
-  console.log(clientData.blueTurn)
 }
 
 wss.on('connection', (ws:WebSocket,req) => {
   ws.on('error', console.error);
-  ///can use this to separate sides 
-  //const url = new URL(req.url, `http://${req.headers.host}`);
-  ///console.log(url)
 
   ///send the draftList here
   ws.send(draftListstring)
