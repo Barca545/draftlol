@@ -21,7 +21,6 @@ export const RedDraft = () => {
   const [newDraft, setNewDraft] = useState<DraftList>(initialDraftList)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [currentSelection, setCurrentSelection] = useState<string[]|null>(null)
-  const [champlist,setChampList] = useState({lane:'ALL',list:newDraft.champList})
 
   const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
@@ -51,8 +50,6 @@ export const RedDraft = () => {
   },[readyState, outgoingDraft])
 
   const handleConfirm = () => {
-    ///use a post request to send an updated champlist to the server
-
     if (currentSelection!==null){
     const newChampList = newDraft.champList.filter((item)=>item[0]!==currentSelection[0])
         const newDraftList = {
@@ -86,29 +83,44 @@ export const RedDraft = () => {
   }
 
   const ChampSelect = () => {
-    const [champList,setChampList] = useState(newDraft.champList)
+    const [champList,setChampList] = useState(newDraft.champList) 
+    const [input,setInput] = useState('')
+    const [laneView,setLaneView] = useState('ALL')
+    
+    useEffect(()=>{
+      if (laneView==='TOP') {setChampList(newDraft.topList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='JUNGLE') {setChampList(newDraft.jgList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='MID') {setChampList(newDraft.midList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='BOTTOM') {setChampList(newDraft.bottomList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='SUPPORT') {setChampList(newDraft.supportList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else {setChampList(newDraft.champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+    },[input])
+
+    const handleSearch = (search:any) => {
+      setInput(search)
+      console.log(input)
+    }
 
     const LaneSelect = () => {     
       return(
         <div className='lane-select'>
-          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList)}}/>
-          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList)}}/>
-          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList)}}/>
-          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList)}}/>
-          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList)}}/>
-          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList)}}/>
-          <input type='text' placeholder='Find Champion...'/>
+          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList);setLaneView('ALL')}}/>
+          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList);setLaneView('TOP')}}/>
+          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList);setLaneView('JUNGLE')}}/>
+          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList);setLaneView('MIDDLE')}}/>
+          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList);setLaneView('BOTTOM')}}/>
+          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList);setLaneView('SUPPORT')}}/>
        </div>
       )
     }
+
     const handleChampSelect = (item:string[]) => {  
       setCurrentSelection(item)
-      console.log(item)
       if(
-        newDraft.blueBanlist!==null
-        &&newDraft.blueSummonerlist!==null
-        &&newDraft.redBanlist!==null
-        &&newDraft.redSummonerlist!==null){
+        newDraft.blueBanlist!=null
+        &&newDraft.blueSummonerlist!=null
+        &&newDraft.redBanlist!=null
+        &&newDraft.redSummonerlist!=null){
         
         let draft:DraftList = {
           blueBanlist: [...newDraft.blueBanlist],
@@ -123,44 +135,39 @@ export const RedDraft = () => {
           bottomList:[...newDraft.bottomList],
           supportList:[...newDraft.supportList],
           ResetTimer: newDraft.ResetTimer
-      }
+        }
   
       if (banPhase==false) {
-        draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
+        draft.redSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
   
       }
       else if (banPhase==true){
-        draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
+        draft.redBanlist[banIndex] = {champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
       }}
     }
-      
-    return(
+    
+    const ChampList = () => {
+      return(
+          <div className='champ-list'>
+            {champList.map((item)=>{
+              return(
+                <div 
+                  className='champion' 
+                  key={item[0]} id={item[0]} 
+                  onClick={()=>{if(newDraft.blueTurn===false){handleChampSelect(item)}}}>
+                  <img src={item[1]} alt=''/>
+                </div>)}
+              )
+            }
+          </div>)}
+
+    return (
       <div className='champ-select'>
+        <input className='search-bar' type='text'  placeholder='Find Champion...' value={input} onChange={(e)=>{handleSearch(e.target.value)}}/>
         <LaneSelect/>
-        <div className='champ-list'>
-        {champList.map((item)=>{
-          if (newDraft.blueTurn===false){
-            return(
-              <div 
-                className='champion' 
-                key={item[0]} id={item[0]} 
-                onClick={()=>{handleChampSelect(item)}}>
-                <img src={item[1]} alt=''/>
-              </div>
-            )
-          }
-          else {
-            return(
-              <div className='champion' 
-              key={item[0]} id={item[0]}>
-                <img src={item[1]} alt=''/>
-              </div>
-            )
-          }
-        })}
-      </div>
+        <ChampList/>
       </div>
     )
   }

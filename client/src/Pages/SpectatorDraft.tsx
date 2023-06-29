@@ -20,11 +20,8 @@ export const SpectatorDraft = () => {
   },[isSuccess])
   
   const [newDraft, setNewDraft] = useState<DraftList>(initialDraftList)
-  const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
-  const [currentSelection, setCurrentSelection] = useState<string[]|null>(null)
-  const [champlist,setChampList] = useState(newDraft.champList)
 
-  const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
+  useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
@@ -36,51 +33,57 @@ export const SpectatorDraft = () => {
     shouldReconnect: () => true
   })
 
-  const [pickIndex,setPickIndex] = useState(0)
-  const [banIndex,setBanIndex] = useState(0)
-  const [banPhase,setBanPhase] = useState(true)
-  const [blueTurn, setBlueTurn] = useState(true)
-  
-  useEffect(()=>{
-    if (banIndex === 3 && pickIndex < 3 ){setBanPhase(false)}
-    else if (banIndex === 3 && pickIndex == 3 ){setBanPhase(true)}
-    else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
+  const ChampSelect = () => {
+    const [champList,setChampList] = useState(newDraft.champList) 
+    const [input,setInput] = useState('')
+    const [laneView,setLaneView] = useState('ALL')
     
-    if (readyState === ReadyState.OPEN && outgoingDraft!==null) {    
-      ///need to make sure to update the blueturn state before sending
-      sendMessage(JSON.stringify(outgoingDraft))
-      console.log(outgoingDraft.blueTurn)
-    }
-    ///do I want sendMessage in the dependencies
-  },[readyState, outgoingDraft])
+    useEffect(()=>{
+      if (laneView==='TOP') {setChampList(newDraft.topList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='JUNGLE') {setChampList(newDraft.jgList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='MID') {setChampList(newDraft.midList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='BOTTOM') {setChampList(newDraft.bottomList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='SUPPORT') {setChampList(newDraft.supportList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else {setChampList(newDraft.champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+    },[input])
 
-  const ChampList = () => {
-    const [champList,setChampList] = useState(newDraft.champList)
+    const handleSearch = (search:any) => {
+      setInput(search)
+      console.log(input)
+    }
 
     const LaneSelect = () => {     
       return(
         <div className='lane-select'>
-          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList)}}/>
-          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList)}}/>
-          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList)}}/>
-          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList)}}/>
-          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList)}}/>
-          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList)}}/>
-          <input type='text' placeholder='Find Champion...'/>
+          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList);setLaneView('ALL')}}/>
+          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList);setLaneView('TOP')}}/>
+          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList);setLaneView('JUNGLE')}}/>
+          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList);setLaneView('MIDDLE')}}/>
+          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList);setLaneView('BOTTOM')}}/>
+          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList);setLaneView('SUPPORT')}}/>
        </div>
       )
-    }  
-
-    return(
-      <div className='champ-select'>
-        <LaneSelect/>
-        <div className='champ-list'>
-          {champList.map((item)=>{
+    }
+    
+    const ChampList = () => {
+      return(
+          <div className='champ-list'>
+            {champList.map((item)=>{
               return(
-                <div className='champion' key={item[0]} id={item[0]}>
+                <div 
+                  className='champion' 
+                  key={item[0]} id={item[0]}>
                   <img src={item[1]} alt=''/>
-                </div>)})}
-        </div>
+                </div>)}
+              )
+            }
+          </div>)}
+
+    return (
+      <div className='champ-select'>
+        <input className='search-bar' type='text'  placeholder='Find Champion...' value={input} onChange={(e)=>{handleSearch(e.target.value)}}/>
+        <LaneSelect/>
+        <ChampList/>
       </div>
     )
   }
@@ -208,7 +211,7 @@ export const SpectatorDraft = () => {
       <CountdownTimer reset={newDraft.ResetTimer} minutes={0} seconds={60}/>
       <BlueSideDraft/>
       <RedSideDraft/>
-      <ChampList/>
+      <ChampSelect/>
       <BlueSideBans/>
       <RedSideBans/>
       <div className='lock-button'/>

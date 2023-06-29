@@ -90,27 +90,31 @@ export const BlueDraft = () => {
   const ChampSelect = () => {
     const [champList,setChampList] = useState(newDraft.champList) 
     const [input,setInput] = useState('')
-    const [laneView,setLaneView] = useState('ALL  ')
+    const [laneView,setLaneView] = useState('ALL')
     
     useEffect(()=>{
-      setChampList(newDraft.champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))
+      if (laneView==='TOP') {setChampList(newDraft.topList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='JUNGLE') {setChampList(newDraft.jgList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='MID') {setChampList(newDraft.midList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='BOTTOM') {setChampList(newDraft.bottomList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else if (laneView==='SUPPORT') {setChampList(newDraft.supportList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      else {setChampList(newDraft.champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
     },[input])
 
     const handleSearch = (search:any) => {
       setInput(search)
-      setChampList(champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))
       console.log(input)
     }
 
     const LaneSelect = () => {     
       return(
         <div className='lane-select'>
-          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList)}}/>
-          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList)}}/>
-          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList)}}/>
-          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList)}}/>
-          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList)}}/>
-          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList)}}/>
+          <input type='button' value={'ALL'} onClick={()=>{setChampList(newDraft.champList);setLaneView('ALL')}}/>
+          <input type='button' value={'TOP'} onClick={()=>{setChampList(newDraft.topList);setLaneView('TOP')}}/>
+          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(newDraft.jgList);setLaneView('JUNGLE')}}/>
+          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(newDraft.midList);setLaneView('MIDDLE')}}/>
+          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(newDraft.bottomList);setLaneView('BOTTOM')}}/>
+          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(newDraft.supportList);setLaneView('SUPPORT')}}/>
        </div>
       )
     }
@@ -149,42 +153,30 @@ export const BlueDraft = () => {
       }}
     }
     
-    const ChampList = (props:{champList:string[][]}) => {
+    const ChampList = () => {
       return(
           <div className='champ-list'>
-            
-          {champList.map((item)=>{
-            if (blueTurn===true){
+            {champList.map((item)=>{
               return(
                 <div 
                   className='champion' 
                   key={item[0]} id={item[0]} 
-                  onClick={()=>{handleChampSelect(item)}}>
+                  onClick={()=>{if(blueTurn===true){handleChampSelect(item)}}}>
                   <img src={item[1]} alt=''/>
-                </div>
+                </div>)}
               )
             }
-            else {
-              return(
-                <div className='champion' 
-                key={item[0]} id={item[0]}>
-                  <img src={item[1]} alt=''/>
-                </div>
-              )
-            }
-          })}
-          </div>
-        
-      )
-    }
+          </div>)}
+
     return (
       <div className='champ-select'>
         <input className='search-bar' type='text'  placeholder='Find Champion...' value={input} onChange={(e)=>{handleSearch(e.target.value)}}/>
         <LaneSelect/>
-        <ChampList champList={champList}/>
+        <ChampList/>
       </div>
     )
   }
+
   const RoleSelect = () => {
     return(
       <div className='role-select'>
