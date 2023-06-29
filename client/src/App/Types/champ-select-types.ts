@@ -1,3 +1,5 @@
+import { Timer } from "./timer-types"
+
 export interface Summoner {
     ///change name to role
     name:string|null,
@@ -22,7 +24,7 @@ export interface DraftList{
     midList:string[][],
     bottomList:string[][],
     supportList:string[][],
-    ResetTimer: boolean,
+    targetTime: number,
 }
 
 

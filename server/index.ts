@@ -8,14 +8,12 @@ import dotenv from 'dotenv';
 import http from 'http'
 import cors from 'cors'
 import bodyParser from 'body-parser';
+import { countDown } from '../server/countDown';
 
-///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
-///current issue where new draft overwrites old one if someone joins the draft captain
-
-///need to add an api to get the draft at the end
-///need to attach the summoner roles to the draftlist JSON
-///each new match needs to spin up a new server instance
-
+///current draftlist state updated whenever a new message comes 
+let draftListstring:string = JSON.stringify(initialDraftList)
+let draftList = initialDraftList
+countDown(draftList.timer)
 
 dotenv.config()
 
@@ -26,12 +24,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
 const server = http.createServer(app)
-
-///current draftlist state updated whenever a new message comes 
-let draftListstring:string = JSON.stringify(initialDraftList)
-let draftList = initialDraftList
-
-const wss = new WebSocketServer({ server:server });
+const wss = new WebSocketServer({server:server});
 
 const clients = {}
 
@@ -42,7 +35,6 @@ function broadcastMessage(DraftList:DraftList) {
   for (let clientId in clients) {
     let client = clients[clientId]
     if (client.readyState === WebSocket.OPEN) {
-      ///send queues information which explains why it isn't sending until the next message
       client.send(draftData)
     }
   }
@@ -58,7 +50,6 @@ const handleMessage = (message:RawData) => {
 wss.on('connection', (ws:WebSocket,req) => {
   ws.on('error', console.error);
 
-  ///send the draftList here
   ws.send(draftListstring)
 
   ///when the connection is established it needs to note which ID belongs to which side

@@ -27,7 +27,7 @@ export const BlueDraft = () => {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
-      const response:DraftList = JSON.parse(message.data);
+      const response:DraftList = JSON.parse(message.data)
       setNewDraft(response)
     },
     share:true, ///maybe share should be false
@@ -46,7 +46,6 @@ export const BlueDraft = () => {
     else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
     
     if (readyState === ReadyState.OPEN && outgoingDraft!==null) {    
-
       sendMessage(JSON.stringify(outgoingDraft))
     }
   },[readyState, outgoingDraft])
@@ -67,7 +66,7 @@ export const BlueDraft = () => {
         midList:[...newDraft.midList.filter((item)=>item[0]!==currentSelection[0])],
         bottomList:[...newDraft.bottomList.filter((item)=>item[0]!==currentSelection[0])],
         supportList:[...newDraft.supportList.filter((item)=>item[0]!==currentSelection[0])],
-        ResetTimer: newDraft.ResetTimer
+        timer: newDraft.timer
       }
 
       setNewDraft(newDraftList)
@@ -139,7 +138,7 @@ export const BlueDraft = () => {
           midList:[...newDraft.midList],
           bottomList:[...newDraft.bottomList],
           supportList:[...newDraft.supportList],
-          ResetTimer: newDraft.ResetTimer
+          timer: newDraft.timer
       }
   
       if (banPhase==false) {
@@ -191,6 +190,7 @@ export const BlueDraft = () => {
     </div>
     )
   }
+
   const BlueSideDraft = () => {
     if (isLoading){
       return(<></>)
@@ -225,6 +225,7 @@ export const BlueDraft = () => {
       return(<></>)
     }
   }
+
   const BlueSideBans = () => {
     if (isLoading){
       return(<></>)
@@ -317,7 +318,7 @@ export const BlueDraft = () => {
 
   return( 
     <div className="grid-container">
-      <CountdownTimer reset={newDraft.ResetTimer} minutes={0} seconds={60}/>
+      <CountdownTimer minutes={0} seconds={60}/>
       <BlueSideDraft/>
       <RedSideDraft/>
       <ChampSelect/>

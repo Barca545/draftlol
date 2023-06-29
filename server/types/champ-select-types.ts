@@ -1,3 +1,5 @@
+import { Timer } from "./timer-types"
+
 export interface Summoner {
     name:string|null,
     champ: string|null,
@@ -21,6 +23,6 @@ export interface DraftList{
     midList:string[][],
     bottomList:string[][],
     supportList:string[][],
-    ResetTimer: boolean,
+    timer: Timer,
 }
 
