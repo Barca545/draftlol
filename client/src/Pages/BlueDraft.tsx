@@ -1,16 +1,17 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import {useEffect, useState } from 'react'
 import '../Pages/draft-styles.css'
-import { DraftList,DraftRequest,isTimer} from '../App/Types/champ-select-types'
+import { DraftList,isTimer} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
 import { useGetListQuery } from '../App/Slices/apiSlice'
 import {initialDraftList} from '../App/InitialStates/initialDraftList'
 import { CountdownTimer } from '../Components/CountdownTimer'
+import {checkChamplist} from '../App/Types/checks'
 
 
 export const BlueDraft = () => {
-  const { data, error, isLoading, isSuccess} = useGetListQuery('draftlist/')
+  const { data,isLoading, isSuccess} = useGetListQuery('draftlist/')
   
   useEffect(()=>{
     if (isSuccess===true && data.champList!==undefined){  
@@ -22,36 +23,37 @@ export const BlueDraft = () => {
   const [newDraft, setNewDraft] = useState<DraftList>(initialDraftList)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [currentSelection, setCurrentSelection] = useState<string[]|null>(null) 
+  const [pickIndex,setPickIndex] = useState(0)
+  const [banIndex,setBanIndex] = useState(0)
+  const [banPhase,setBanPhase] = useState(true)
+  const [blueTurn, setBlueTurn] = useState(true)
 
-  const {sendMessage, lastMessage, readyState} = useWebSocket(BASE_URL, {
+  const {sendMessage,readyState} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
       let data:DraftList = JSON.parse(message.data)
       if(!isTimer(data)){
+  
         setNewDraft(data)
-      }
       
+      }
     },
     share:true, ///maybe share should be false
     retryOnError: true,
     shouldReconnect: () => true
   })
 
-  const [pickIndex,setPickIndex] = useState(0)
-  const [banIndex,setBanIndex] = useState(0)
-  const [banPhase,setBanPhase] = useState(true)
-  const [blueTurn, setBlueTurn] = useState(true)
-  
   useEffect(()=>{
     if (banIndex === 3 && pickIndex < 3 ){setBanPhase(false)}
-    else if (banIndex === 3 && pickIndex == 3 ){setBanPhase(true)}
-    else if (banIndex === 5 && pickIndex == 3 ){setBanPhase(false)}
+    else if (banIndex === 3 && pickIndex === 3 ){setBanPhase(true)}
+    else if (banIndex === 5 && pickIndex === 3 ){setBanPhase(false)}
     
+    ///this is causing the entire page to refresh
     if (readyState === ReadyState.OPEN && outgoingDraft!==null) {    
       sendMessage(JSON.stringify(outgoingDraft))
     }
-  },[readyState, outgoingDraft])
+  },[readyState, outgoingDraft,banIndex, pickIndex])
 
   const handleConfirm = () => {
     if (currentSelection!==null){    
@@ -66,7 +68,7 @@ export const BlueDraft = () => {
 
       setNewDraft(newDraftList)
       setOutgoingDraft(newDraftList)  
-      sendMessage(JSON.stringify({seconds:60}))
+      //sendMessage(JSON.stringify({seconds:60}))
     }
     
     if (banPhase === false&&newDraft.blueSummonerlist!==null){
@@ -81,20 +83,20 @@ export const BlueDraft = () => {
     }
   }
 
-
+///what is causing the whole app to rerender?
   const ChampSelect = () => {
     const [champList,setChampList] = useState(newDraft.champList) 
     const [input,setInput] = useState('')
     const [laneView,setLaneView] = useState('ALL')
-    
+
     useEffect(()=>{
-      if (laneView==='TOP') {setChampList(newDraft.topList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
+      if (laneView==='TOP') {}
       else if (laneView==='JUNGLE') {setChampList(newDraft.jgList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
       else if (laneView==='MID') {setChampList(newDraft.midList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
       else if (laneView==='BOTTOM') {setChampList(newDraft.bottomList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
       else if (laneView==='SUPPORT') {setChampList(newDraft.supportList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
       else {setChampList(newDraft.champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))}
-    },[input])
+    },[laneView])
 
     const handleSearch = (search:any) => {
       setInput(search)
@@ -117,20 +119,20 @@ export const BlueDraft = () => {
     const handleChampSelect = (item:string[]) => {  
       setCurrentSelection(item)
       if(
-        newDraft.blueBanlist!=null
-        &&newDraft.blueSummonerlist!=null
-        &&newDraft.redBanlist!=null
-        &&newDraft.redSummonerlist!=null){
+        newDraft.blueBanlist!==null
+        &&newDraft.blueSummonerlist!==null
+        &&newDraft.redBanlist!==null
+        &&newDraft.redSummonerlist!==null){
         
         let draft:DraftList = {...newDraft}
   
-      if (banPhase==false) {
+      if (banPhase===false) {
         debugger
         draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
   
       }
-      else if (banPhase==true){
+      else if (banPhase===true){
         draft.blueBanlist[banIndex] = {champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
       }}
@@ -163,7 +165,15 @@ export const BlueDraft = () => {
   const RoleSelect = () => {
     return(
       <div className='role-select'>
-        <select>
+        <select className='roles'>
+          <option defaultValue=''>Select Role...</option>
+          <option value='blue-top'>Top</option>
+          <option value='blue-jg'>Jungle</option>
+          <option value='blue-mid'>Middle</option>
+          <option value='blue-adc'>Bottom</option>
+          <option value='blue-sup'>Support</option>
+        </select>
+        <select className='discord-ids'>
           <option defaultValue=''>Select Role...</option>
           <option value='blue-top'>Top</option>
           <option value='blue-jg'>Jungle</option>
