@@ -1,7 +1,4 @@
-import { Timer } from "./timer-types"
-
 export interface Summoner {
-    ///change name to role
     name:string|null,
     champ: string|null,
     icon: string
@@ -24,20 +21,23 @@ export interface DraftList{
     midList:string[][],
     bottomList:string[][],
     supportList:string[][],
-    targetTime: number,
 }
 
+export interface Timer {
+    ///minutes: number,
+    seconds: number
+}
 
 export interface ChampSelection {
     name: string,
     icon: string
 }
 
-///possibly delete
-export type Channel = string
+export interface DraftRequest {
+    ///channel: string 
+    requestBody: DraftList | Timer
+}
 
-export interface DraftListRequest {
-    banlist: Ban[],
-    summonerlist: Summoner[]
-    channel: Channel
+export function isTimer(requestBody: Timer | DraftList| null):requestBody is Timer {
+    return (requestBody as Timer).seconds !== undefined
 }

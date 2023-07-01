@@ -42,5 +42,4 @@ export const initialDraftList:DraftList = {
     midList:initalMid,
     bottomList:intialBottom,
     supportList:initialSupport,
-    timer: {minutes:1,seconds:0},
 }

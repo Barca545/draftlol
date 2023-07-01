@@ -3,7 +3,6 @@ import '../Pages/draft-styles.css'
 import { DraftList} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
-import { ReadyState } from 'react-use-websocket'
 import { useGetListQuery } from '../App/Slices/apiSlice'
 import {initialDraftList} from '../App/InitialStates/initialDraftList'
 import { CountdownTimer } from '../Components/CountdownTimer'
@@ -208,7 +207,7 @@ export const SpectatorDraft = () => {
 
   return( 
     <div className="grid-container">
-      <CountdownTimer reset={newDraft.ResetTimer} minutes={0} seconds={60}/>
+      <CountdownTimer/>
       <BlueSideDraft/>
       <RedSideDraft/>
       <ChampSelect/>

@@ -6,16 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ws_1 = require("ws");
 var initialDraftList_js_1 = require("./initialStates/initialDraftList.js");
 var uuid_1 = require("uuid");
+var champ_select_types_js_1 = require("./types/champ-select-types.js");
 var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var http_1 = __importDefault(require("http"));
 var cors_1 = __importDefault(require("cors"));
 var body_parser_1 = __importDefault(require("body-parser"));
-///https://stackoverflow.com/questions/12192321/is-it-possible-to-send-a-data-when-a-websocket-connection-is-opened
-///current issue where new draft overwrites old one if someone joins the draft captain
-///need to add an api to get the draft at the end
-///need to attach the summoner roles to the draftlist JSON
-///each new match needs to spin up a new server instance
+///current draftlist state updated whenever a new message comes 
+/*eventuall
+may need to change the scope of draftList when I make this support multiple websockets*/
+var draftList = JSON.stringify(initialDraftList_js_1.initialDraftList);
+var timer = JSON.stringify({ seconds: 60 });
 dotenv_1.default.config();
 var app = (0, express_1.default)();
 var port = process.env.SERVER_PORT || 8080;
@@ -23,33 +24,40 @@ app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 var server = http_1.default.createServer(app);
-///current draftlist state updated whenever a new message comes 
-var draftListstring = JSON.stringify(initialDraftList_js_1.initialDraftList);
-var draftList = initialDraftList_js_1.initialDraftList;
 var wss = new ws_1.WebSocketServer({ server: server });
 var clients = {};
-///obviously have to confirm the logic here is what I want since I just copied it from the tutorial
-function broadcastMessage(DraftList) {
-    var draftData = JSON.stringify(DraftList);
-    draftListstring = draftData;
+function broadcastDraft(list) {
+    var draftData = JSON.stringify(list);
+    draftList = draftData;
     for (var clientId in clients) {
         var client = clients[clientId];
         if (client.readyState === ws_1.WebSocket.OPEN) {
-            ///send queues information which explains why it isn't sending until the next message
             client.send(draftData);
+        }
+    }
+}
+function broadcastTimer(time) {
+    timer = JSON.stringify(time);
+    for (var clientId in clients) {
+        var client = clients[clientId];
+        if (client.readyState === ws_1.WebSocket.OPEN) {
+            client.send(timer);
         }
     }
 }
 var handleMessage = function (message) {
     var clientData = JSON.parse(message.toString());
-    ///eventuall I think I need to change the scope of draftList when I make this support multiple websockets
-    draftList = clientData;
-    broadcastMessage(clientData);
+    if ((0, champ_select_types_js_1.isTimer)(clientData)) {
+        broadcastTimer(clientData);
+    }
+    else {
+        broadcastDraft(clientData);
+    }
 };
 wss.on('connection', function (ws, req) {
     ws.on('error', console.error);
-    ///send the draftList here
-    ws.send(draftListstring);
+    ws.send(draftList);
+    ws.send(timer);
     ///when the connection is established it needs to note which ID belongs to which side
     var clientId = (0, uuid_1.v4)();
     clients[clientId] = ws;
@@ -63,6 +71,7 @@ wss.on('connection', function (ws, req) {
 });
 ///api endpoints would like to put them in a different folder at some point 
 app.get('/draftlist', function (req, res) {
+    ///may have to use JSON.parse on the other end since this is now a JSON string
     res.send(draftList);
 });
 server.listen(port, function () {

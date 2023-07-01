@@ -43,5 +43,4 @@ exports.initialDraftList = {
     midList: initalMid_1.initalMid,
     bottomList: initalBottom_1.intialBottom,
     supportList: initialSupport_1.initialSupport,
-    ResetTimer: false,
 };

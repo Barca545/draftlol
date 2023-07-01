@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import '../Pages/draft-styles.css'
-import { DraftList} from '../App/Types/champ-select-types'
+import { DraftList,DraftRequest,isTimer} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
@@ -27,8 +27,11 @@ export const BlueDraft = () => {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
-      const response:DraftList = JSON.parse(message.data)
-      setNewDraft(response)
+      let data:DraftList = JSON.parse(message.data)
+      if(!isTimer(data)){
+        setNewDraft(data)
+      }
+      
     },
     share:true, ///maybe share should be false
     retryOnError: true,
@@ -51,26 +54,20 @@ export const BlueDraft = () => {
   },[readyState, outgoingDraft])
 
   const handleConfirm = () => {
-    if (currentSelection!==null){
-      const newChampList = newDraft.champList.filter((item)=>item[0]!==currentSelection[0])      
-      
-      const newDraftList = {
-        blueBanlist: [...newDraft.blueBanlist],
-        blueSummonerlist: [...newDraft.blueSummonerlist],
-        redBanlist: [...newDraft.redBanlist],
-        redSummonerlist: [...newDraft.redSummonerlist],
-        blueTurn: false,
-        champList: newChampList,
+    if (currentSelection!==null){    
+      const newDraftList = {...newDraft,
+        champList:[...newDraft.champList.filter((item)=>item[0]!==currentSelection[0])],
         topList: [...newDraft.topList.filter((item)=>item[0]!==currentSelection[0])],
         jgList:[...newDraft.jgList.filter((item)=>item[0]!==currentSelection[0])],
         midList:[...newDraft.midList.filter((item)=>item[0]!==currentSelection[0])],
         bottomList:[...newDraft.bottomList.filter((item)=>item[0]!==currentSelection[0])],
         supportList:[...newDraft.supportList.filter((item)=>item[0]!==currentSelection[0])],
-        timer: newDraft.timer
       }
 
       setNewDraft(newDraftList)
+      ///
       setOutgoingDraft(newDraftList)  
+      sendMessage
     }
     
     if (banPhase === false&&newDraft.blueSummonerlist!==null){
@@ -126,20 +123,7 @@ export const BlueDraft = () => {
         &&newDraft.redBanlist!=null
         &&newDraft.redSummonerlist!=null){
         
-        let draft:DraftList = {
-          blueBanlist: [...newDraft.blueBanlist],
-          blueSummonerlist: [...newDraft.blueSummonerlist],
-          redBanlist: [...newDraft.redBanlist],
-          redSummonerlist: [...newDraft.redSummonerlist],
-          blueTurn: blueTurn,
-          champList: [...newDraft.champList],
-          topList:[...newDraft.topList],
-          jgList:[...newDraft.jgList],
-          midList:[...newDraft.midList],
-          bottomList:[...newDraft.bottomList],
-          supportList:[...newDraft.supportList],
-          timer: newDraft.timer
-      }
+        let draft:DraftList = {...newDraft}
   
       if (banPhase==false) {
         draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
@@ -318,7 +302,7 @@ export const BlueDraft = () => {
 
   return( 
     <div className="grid-container">
-      <CountdownTimer minutes={0} seconds={60}/>
+      <CountdownTimer/>
       <BlueSideDraft/>
       <RedSideDraft/>
       <ChampSelect/>
