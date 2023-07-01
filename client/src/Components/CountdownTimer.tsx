@@ -7,6 +7,10 @@ import { BASE_URL } from '../App/Slices/baseurl'
 export const CountdownTimer = () => { 
   const [time, setTime] = useState<Timer|null>(null)
 
+  const sleep = (seconds:number ) => new Promise(
+    resolve => setTimeout(resolve, seconds*1000)
+  )
+
   const {sendMessage} = useWebSocket(BASE_URL, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
@@ -22,7 +26,8 @@ export const CountdownTimer = () => {
     shouldReconnect: () => true
   })
   
-  const handleReset = () => {
+  const handleReset = async () => {
+    await sleep(2)
     sendMessage(JSON.stringify({seconds:60}))
   }
   
@@ -59,5 +64,4 @@ export const CountdownTimer = () => {
       <></>
     )
   }
-  
 }

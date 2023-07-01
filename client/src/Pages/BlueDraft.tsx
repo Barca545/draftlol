@@ -65,9 +65,8 @@ export const BlueDraft = () => {
       }
 
       setNewDraft(newDraftList)
-      ///
       setOutgoingDraft(newDraftList)  
-      sendMessage
+      sendMessage(JSON.stringify({seconds:60}))
     }
     
     if (banPhase === false&&newDraft.blueSummonerlist!==null){
@@ -126,6 +125,7 @@ export const BlueDraft = () => {
         let draft:DraftList = {...newDraft}
   
       if (banPhase==false) {
+        debugger
         draft.blueSummonerlist[pickIndex] = {name: '',champ:item[0],icon:item[1]}
         setOutgoingDraft(draft)
   

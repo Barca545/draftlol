@@ -65,6 +65,7 @@ export const RedDraft = () => {
 
       setNewDraft(newDraftList)
       setOutgoingDraft(newDraftList)  
+      sendMessage(JSON.stringify({seconds:60}))
     }
     
     if (banPhase == false&&newDraft.blueSummonerlist!==null){

@@ -12,6 +12,7 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var http_1 = __importDefault(require("http"));
 var cors_1 = __importDefault(require("cors"));
 var body_parser_1 = __importDefault(require("body-parser"));
+var promises_1 = require("timers/promises");
 ///current draftlist state updated whenever a new message comes 
 /*eventuall
 may need to change the scope of draftList when I make this support multiple websockets*/
@@ -41,7 +42,12 @@ function broadcastTimer(time) {
     for (var clientId in clients) {
         var client = clients[clientId];
         if (client.readyState === ws_1.WebSocket.OPEN) {
-            client.send(timer);
+            if (time.seconds === 60) {
+                (0, promises_1.setTimeout)(client.send(timer), 5000000);
+            }
+            else {
+                client.send(timer);
+            }
         }
     }
 }
