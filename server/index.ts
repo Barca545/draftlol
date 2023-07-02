@@ -2,12 +2,15 @@ import {WebSocket, WebSocketServer,RawData} from 'ws';
 import {initialDraftList}
  from './initialStates/initialDraftList.js';
 import {v4 as uuidv4} from 'uuid'
-import { DraftList, isTimer, DraftRequest, Timer } from './types/champ-select-types.js';
+import { DraftList,DraftRequest, Timer } from './types/champ-select-types.js';
+import { isTimer,isDraftlist } from './types/type-guards.js';
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import http from 'http'
 import cors from 'cors'
 import bodyParser from 'body-parser';
+import { WS_URL, Socket, Connection} from './types/connection-types.js';
+import { isConnection } from './types/type-guards.js';
 
 ///current draftlist state updated whenever a new message comes 
 /*eventuall 
@@ -26,49 +29,81 @@ app.use(bodyParser.urlencoded({extended: false}))
 const server = http.createServer(app)
 const wss = new WebSocketServer({server:server});
 
-const clients = {}
-
+const connections:Connection[] = []
 
 function broadcastDraft(list:DraftList) {
   const draftData = JSON.stringify(list)
   draftList = draftData
-  for (let clientId in clients) {
-    let client = clients[clientId]
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(draftData)
-    }
+  for (let connection in connections) {
+    ///console.log(connections)
   }
 }
 
 function broadcastTimer(time:Timer){
   timer = JSON.stringify(time)
-  for (let clientId in clients) {
-    let client = clients[clientId]
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(timer)
-    }
+  for (let connection in connections) {
+    ///console.log(connections)
   }
 }
 
 const handleMessage = (message:RawData) => {
-  const clientData:DraftList | Timer = JSON.parse(message.toString())
+  const clientData: DraftList | Timer = JSON.parse(message.toString())
   if (isTimer(clientData)) {
     broadcastTimer(clientData)
   }
-  else{broadcastDraft(clientData)}
-  
+  ///problem is this line, it is broadcasting draft every time the 
+  else if (isDraftlist(clientData)) {
+    broadcastDraft(clientData)}
 }
 
 wss.on('connection', (ws:WebSocket,req) => {
   ws.on('error', console.error);
 
-  ws.send(draftList)
-  ws.send(timer)
+  const urlArray = req.url.split('/')
 
-  ///when the connection is established it needs to note which ID belongs to which side
-  const clientId = uuidv4()
-  clients[clientId] = ws
-  console.log(`User ${clientId} connected`)
+  const url:WS_URL = {
+    matchID:urlArray[1],
+    componentid:urlArray[2]
+  }
+
+  const socket:Socket = {
+    ID: uuidv4(),
+    socket: ws
+  }
+
+  const connectionIndex = connections.findIndex((matchID)=>{return matchID.matchID===url.matchID})
+
+  if (connectionIndex!==-1){
+    if (url.componentid==='timer') {
+      connections[connectionIndex].timerIDs.push(socket)
+      ws.send(timer)
+    }
+    else if (url.componentid==='draft'){
+      connections[connectionIndex].draftIDs.push(socket)
+      ws.send(draftList)
+    }
+  else if (connectionIndex===-1) {
+    console.log('else')
+    if (url.componentid==='timer'){
+      const connection:Connection = {
+        matchID:url.matchID,
+        timerIDs: [socket],
+        draftIDs: [],
+      }
+      connections.push(connection)
+      ws.send(timer)
+    } 
+    else if (url.componentid==='draft'){
+      const connection:Connection = {
+        matchID:url.matchID,
+        timerIDs: [],
+        draftIDs: [socket],
+      }
+      connections.push(connection)
+      ws.send(draftList)
+    }
+  }
+  }
 
   ws.on('message', (message) => {
     handleMessage(message)

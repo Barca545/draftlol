@@ -37,6 +37,4 @@ export interface DraftRequest {
     requestBody: DraftList | Timer
 }
 
-export function isTimer(requestBody: Timer | DraftList):requestBody is Timer {
-    return (requestBody as Timer).seconds !== undefined
-}
+

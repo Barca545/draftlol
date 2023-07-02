@@ -11,7 +11,7 @@ export const CountdownTimer = () => {
     resolve => setTimeout(resolve, seconds*1000)
   )
 
-  const {sendMessage} = useWebSocket(BASE_URL, {
+  const {sendMessage } = useWebSocket(`${BASE_URL}/sdfsdfsdfsdfdsfsfdsfsdf/timer`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
@@ -20,8 +20,7 @@ export const CountdownTimer = () => {
         setTime(timer)
       }
     },
-
-    share:true, ///maybe share should be false
+    share:false, 
     retryOnError: true,
     shouldReconnect: () => true
   })
