@@ -1,7 +1,7 @@
 import {useEffect, useState } from 'react'
 import '../Pages/draft-styles.css'
 import { DraftList,isTimer} from '../App/Types/champ-select-types'
-import { BASE_URL } from '../App/Slices/baseurl'
+import { BASE_URL, MATCH_ID } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
 import { ReadyState } from 'react-use-websocket'
 import { useGetListQuery } from '../App/Slices/apiSlice'
@@ -26,7 +26,7 @@ export const BlueDraft = () => {
   const [banPhase,setBanPhase] = useState(true)
   const [blueTurn, setBlueTurn] = useState(true)
 
-  const {sendMessage,readyState} = useWebSocket(BASE_URL, {
+  const {sendMessage,readyState} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {

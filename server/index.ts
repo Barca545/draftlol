@@ -2,7 +2,7 @@ import {WebSocket, WebSocketServer,RawData} from 'ws';
 import {initialDraftList}
  from './initialStates/initialDraftList.js';
 import {v4 as uuidv4} from 'uuid'
-import { DraftList,DraftRequest, Timer } from './types/champ-select-types.js';
+import { DraftList, DraftRequest, Timer } from './types/champ-select-types.js';
 import { isTimer,isDraftlist } from './types/type-guards.js';
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
@@ -11,6 +11,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser';
 import { WS_URL, Socket, Connection} from './types/connection-types.js';
 import { isConnection } from './types/type-guards.js';
+import { SocketConnection } from './types/connectionClass';
 
 ///current draftlist state updated whenever a new message comes 
 /*eventuall 
@@ -29,36 +30,36 @@ app.use(bodyParser.urlencoded({extended: false}))
 const server = http.createServer(app)
 const wss = new WebSocketServer({server:server});
 
-const connections:Connection[] = []
+const connections:SocketConnection[] = []
 
 function broadcastDraft(list:DraftList) {
   const draftData = JSON.stringify(list)
   draftList = draftData
-  for (let connection in connections) {
-    ///console.log(connections)
-  }
+  connections.map((connection)=>{
+    if (connection.type==='draft') {connection.socket.send(draftData)}
+  })
 }
 
 function broadcastTimer(time:Timer){
-  timer = JSON.stringify(time)
-  for (let connection in connections) {
-    ///console.log(connections)
-  }
+  const timerData = JSON.stringify(time)
+  timer = timerData
+    connections.map((connection)=>{
+      if (connection.type==='timer') {connection.socket.send(timerData)}
+    })
 }
 
 const handleMessage = (message:RawData) => {
   const clientData: DraftList | Timer = JSON.parse(message.toString())
   if (isTimer(clientData)) {
-    broadcastTimer(clientData)
+    broadcastTimer(clientData) 
   }
-  ///problem is this line, it is broadcasting draft every time the 
   else if (isDraftlist(clientData)) {
     broadcastDraft(clientData)}
 }
 
 wss.on('connection', (ws:WebSocket,req) => {
   ws.on('error', console.error);
-
+  
   const urlArray = req.url.split('/')
 
   const url:WS_URL = {
@@ -66,45 +67,24 @@ wss.on('connection', (ws:WebSocket,req) => {
     componentid:urlArray[2]
   }
 
-  const socket:Socket = {
-    ID: uuidv4(),
-    socket: ws
-  }
-
-  const connectionIndex = connections.findIndex((matchID)=>{return matchID.matchID===url.matchID})
-
-  if (connectionIndex!==-1){
-    if (url.componentid==='timer') {
-      connections[connectionIndex].timerIDs.push(socket)
-      ws.send(timer)
-    }
-    else if (url.componentid==='draft'){
-      connections[connectionIndex].draftIDs.push(socket)
-      ws.send(draftList)
-    }
-  else if (connectionIndex===-1) {
-    console.log('else')
-    if (url.componentid==='timer'){
-      const connection:Connection = {
-        matchID:url.matchID,
-        timerIDs: [socket],
-        draftIDs: [],
-      }
+  //stick them all in the same connections and just broadcast timer messages to all timers and draft messages to all draft types
+  switch (url.componentid) {
+    case 'timer':{
+      const connection = new SocketConnection(ws,'timer',uuidv4())
       connections.push(connection)
+      console.log(`Timer: ${connection.id} connnected`)
       ws.send(timer)
-    } 
-    else if (url.componentid==='draft'){
-      const connection:Connection = {
-        matchID:url.matchID,
-        timerIDs: [],
-        draftIDs: [socket],
-      }
+      break
+    }
+    case 'draft':{
+      const connection = new SocketConnection(ws,'draft',uuidv4())
       connections.push(connection)
+      console.log(`Draft: ${connection.id} connnected`)
       ws.send(draftList)
+      break
     }
   }
-  }
-
+  
   ws.on('message', (message) => {
     handleMessage(message)
   });
@@ -123,3 +103,33 @@ app.get('/draftlist', (req:Request, res:Response)=> {
 server.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
+
+/*
+import express, { Express, Request, Response } from 'express';
+import dotenv from 'dotenv';
+import http from 'http'
+import cors from 'cors'
+import bodyParser from 'body-parser';
+import {Server} from "socket.io";
+
+dotenv.config()
+
+const app:Express = express()
+const port = process.env.SERVER_PORT || 8080
+app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
+
+const server = http.createServer(app)
+
+let io = new Server()
+
+io.on('connection', (socket)=>{
+  console.log()
+
+
+})
+
+server.listen(port, () => {
+  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+});*/

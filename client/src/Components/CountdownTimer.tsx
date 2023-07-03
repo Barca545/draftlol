@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react'
 import { Timer, isTimer} from '../App/Types/champ-select-types'
 import '../Pages/draft-styles.css'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
-import { BASE_URL } from '../App/Slices/baseurl'
+import { BASE_URL, MATCH_ID } from '../App/Slices/baseurl'
 
 export const CountdownTimer = () => { 
   const [time, setTime] = useState<Timer|null>(null)
@@ -11,14 +11,13 @@ export const CountdownTimer = () => {
     resolve => setTimeout(resolve, seconds*1000)
   )
 
-  const {sendMessage } = useWebSocket(`${BASE_URL}/sdfsdfsdfsdfdsfsfdsfsdf/timer`, {
+  const {sendMessage } = useWebSocket(`${BASE_URL}/${MATCH_ID}/timer`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
       let timer:Timer = JSON.parse(message.data)
-      if(isTimer(timer)){
-        setTime(timer)
-      }
+      setTime(timer)
+      console.log(timer)
     },
     share:false, 
     retryOnError: true,
