@@ -120,6 +120,42 @@ app.get('/draftlist', (req:Request, res:Response)=> {
   res.send(draftList)
 })
 
+
+const app:Express = express()
+const port = process.env.SERVER_PORT || 8080
+app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
+
+const server = http.createServer(app)
+const wss = new WebSocketServer({server:server});
+
+const sendDraft = (params) => {...}
+const sendTimer = (params) => {...}
+
+const wsMethods = {
+  sendDraft,
+  sendTimer
+}
+
+wss.on('open', () => {
+  // do something when the connection is open
+});
+
+wss.on('message', (message) => {
+  // message includes a function to call (whitelisted) and the params
+  try {
+    const { fn, params } = JSON.parse(message)
+    if (typeof wsMethods[fn] !== 'function') { throw new Error('invalid rpc call') }
+    
+    ws.send(wsMethods[fn](params))
+  } catch (e) {...}
+});
+
+wss.on('close', () => {
+  // do something when the connection is closed
+}); 
+
 server.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
