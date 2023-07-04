@@ -1,9 +1,9 @@
-import { CountdownTimer } from "../Components/CountdownTimer"
+import { ChampSelect } from "../Components/ChampSelect"
 
 export const CreateDraft = () => {
   return (
     <>
-      <CountdownTimer/>
+      <ChampSelect/>
     </>
   )
 }

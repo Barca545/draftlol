@@ -1,0 +1,214 @@
+/* need to update the styles so the formating persists */
+.blue-side {
+    grid-area: blue-side;
+    background-color: blue;
+    display:grid;
+    grid-template-areas: 
+    'blue-summoner-1'
+    'blue-summoner-2'
+    'blue-summoner-3'
+    'blue-summoner-4'
+    'blue-summoner-5';
+    gap: 10px;
+    padding: 10px;
+}
+.blue-summoner-1 {
+    grid-area: blue-summoner-1;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.blue-summoner-2 {
+    grid-area: blue-summoner-2;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.blue-summoner-3 {
+    grid-area: blue-summoner-3;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.blue-summoner-4 {
+    grid-area: blue-summoner-4;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.blue-summoner-5 {
+    grid-area: blue-summoner-5;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+
+.red-side {
+    grid-area: red-side;
+    background-color: red;
+    display:grid;
+    grid-template-areas: 
+    'red-summoner-1'
+    'red-summoner-2'
+    'red-summoner-3'
+    'red-summoner-4'
+    'red-summoner-5';
+    gap: 10px;
+    padding: 10px;
+}
+
+.blue-side-bans{
+    grid-area: blue-side-bans;
+    background-color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.red-side-bans{
+    grid-area: red-side-bans;
+    background-color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.red-summoner-1 {
+    grid-area: red-summoner-1;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.red-summoner-2 {
+    grid-area: red-summoner-2;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.red-summoner-3 {
+    grid-area: red-summoner-3;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.red-summoner-4 {
+    grid-area: red-summoner-4;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+.red-summoner-5 {
+    grid-area: red-summoner-5;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 140px;
+    gap: 100px;
+    background-color: yellow;
+}
+
+.lock-button {
+    grid-area: lock-button;
+    display: flex;
+    background-color: aquamarine;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    grid-template-rows: 10% 80% 10%;
+    grid-template-areas: 
+    'blue-side count-down red-side'
+    'blue-side champ-select red-side'
+    'blue-side-bans lock-button red-side-bans';
+    height: 100vh;
+    width: 100%;
+}
+
+.timer{
+    grid-area: count-down;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color: cornsilk;
+    font-size: 200%;
+    font-weight: 700;
+}
+
+.champ-select {
+    grid-area: champ-select;
+    background-color: aqua;
+    display: grid;
+    grid-template-rows: 10% 90%;
+    grid-template-areas: 
+    'lane-select search-bar'
+    'champ-list champ-list';
+}
+
+.search-bar{
+    grid-area: search-bar;
+    background-color: rgb(202, 178, 202);
+ }
+
+.lane-select{
+    grid-area: lane-select;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+    background-color: purple;
+}
+
+.champ-list{
+    grid-area: champ-list;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    overflow-y:scroll;
+}
+
+.champion {
+    background-color: green;
+    width: 25%;
+    height: 136.5px;
+}
+
+.champselect-image{
+    height: 136.5px;
+    width: 136.5px;
+}
+
+.ban-image{
+    height: 86px;
+    width: 86px;
+}

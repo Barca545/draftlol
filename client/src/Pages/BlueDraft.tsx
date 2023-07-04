@@ -1,5 +1,5 @@
 import {useEffect, useState } from 'react'
-import '../Pages/draft-styles.css'
+///import '../Pages/draft-styles.css'
 import { DraftList,isTimer} from '../App/Types/champ-select-types'
 import { BASE_URL, MATCH_ID } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
@@ -7,6 +7,7 @@ import { ReadyState } from 'react-use-websocket'
 import { useGetListQuery } from '../App/Slices/apiSlice'
 import {initialDraftList} from '../App/InitialStates/initialDraftList'
 import { CountdownTimer } from '../Components/CountdownTimer'
+import { ChampSelect } from '../Components/ChampSelect'
 
 export const BlueDraft = () => {
   const { data,isLoading, isSuccess} = useGetListQuery('draftlist/')
@@ -31,30 +32,25 @@ export const BlueDraft = () => {
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
       let data:DraftList = JSON.parse(message.data)
-      if(!isTimer(data)){
-        ///let incomingDraft =
-        setDraft(data)
-      }
+      setDraft(data)
+      console.log(draft)
     },
-    share:true, ///maybe share should be false
+    share:false, ///maybe share should be false
     retryOnError: true,
     shouldReconnect: () => true
   })
 
   useEffect(()=>{
-    if (banIndex === 3 && pickIndex < 3 ){setBanPhase(false)}
-    else if (banIndex === 3 && pickIndex === 3 ){setBanPhase(true)}
-    else if (banIndex === 5 && pickIndex === 3 ){setBanPhase(false)}
-    ///this is causing the entire page to refresh
-    ///another solution might be to disambiguate the JSON and have the champlist be its own thing
-    ///then I can reset champlist only after confirm
-    if (readyState === ReadyState.OPEN && updatedDraft!==null) {    
-      sendMessage(JSON.stringify(updatedDraft))
-    }
-  },[readyState, updatedDraft, banIndex, pickIndex])
+    
+
+  },[draft])
 
 
   const handleConfirm = () => {
+    if (banIndex === 3 && pickIndex < 3 ){setBanPhase(false)}
+    else if (banIndex === 3 && pickIndex === 3 ){setBanPhase(true)}
+    else if (banIndex === 5 && pickIndex === 3 ){setBanPhase(false)}
+
     if (currentSelection!==null){    
       const newDraftList = {...draft,
         champList:[...draft.champList.filter((item)=>item[0]!==currentSelection[0])],
@@ -81,8 +77,7 @@ export const BlueDraft = () => {
     }
   }
 
-///what is causing the whole app to rerender?
-  const ChampSelect = () => {
+  /*const ChampSelect = () => {
     const [champList,setChampList] = useState(draft.champList) 
     const [input,setInput] = useState('')
     const [laneView,setLaneView] = useState('ALL')
@@ -158,7 +153,7 @@ export const BlueDraft = () => {
         <ChampList/>
       </div>
     )
-  }
+  }*/
 
   const RoleSelect = () => {
     return(
@@ -313,11 +308,7 @@ export const BlueDraft = () => {
   return( 
     <div className="grid-container">
       <CountdownTimer/>
-      <BlueSideDraft/>
-      <RedSideDraft/>
       <ChampSelect/>
-      <BlueSideBans/>
-      <RedSideBans/>
       <div className='lock-button'>
         <input className='confirm-button' type='button' value={'LOCK'} onClick={()=>handleConfirm()}/>
       </div>
