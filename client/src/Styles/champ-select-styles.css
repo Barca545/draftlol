@@ -1,0 +1,27 @@
+.champion-select{
+  display: grid;
+  grid-template-areas: 
+  'champ-list champ-list champ-list'
+  'blue-side-bans filler red-side-bans'
+  ;
+  height: 100vh;
+  width: 100vw;
+}
+
+.champ-list{
+  grid-area: champ-list;
+  background-color: green;
+  display: flex;
+}
+
+.blue-side-bans{
+  grid-area: blue-side-bans;
+  display: flex
+}
+
+.red-side-bans{
+  grid-area: red-side-bans;
+  display: flex
+}
+
+

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import '../Pages/draft-styles.css'
+import '../Styles/draft-styles.css'
 import { DraftList} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'

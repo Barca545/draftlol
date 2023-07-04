@@ -1,9 +1,10 @@
-import { ChampSelect } from "../Components/ChampSelect"
+import { BlueChampSelect } from "../Components/ChampSelect"
+import '../Styles/champ-select-styles.css'
 
 export const CreateDraft = () => {
   return (
     <>
-      <ChampSelect/>
+      <BlueChampSelect/>
     </>
   )
 }
