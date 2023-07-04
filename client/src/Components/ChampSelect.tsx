@@ -2,12 +2,16 @@ import {useEffect, useState } from 'react'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 import { BASE_URL,MATCH_ID } from '../App/Slices/baseurl'
 import { DraftList, PickBanIndex, isDraft} from '../App/Types/champ-select-types'
-
+import { initalAllChamps } from './initialStates/initalAllChamps' 
 
 export const BlueChampSelect = () => {
   const [draft, setDraft] = useState<DraftList|null>(null)
+  ///easiest way to avoid the infinite rerender problem is by using an outgoing draft
+  const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [pickBanIndex,setPickBanIndex] = useState<PickBanIndex>({pickNumber:0,banNumber:0}) 
-  const [champList,setChampList] = useState(draft?.champList)
+  const [champList,setChampList] = useState(initalAllChamps)
+  const [input,setInput] = useState('')
+  
 
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
@@ -15,23 +19,18 @@ export const BlueChampSelect = () => {
     onMessage: (message:WebSocketEventMap['message']) => {
       let data:DraftList = JSON.parse(message.data)
       setDraft(data)
+      setChampList(data.champList)
     },
-    share:false, ///maybe share should be false
+    share:false, 
     retryOnError: true,
     shouldReconnect: () => true
     })
 
   useEffect(()=>{
-    sendMessage(JSON.stringify(draft))
-  },[draft])
+    if (isDraft(outgoingDraft)){sendMessage(JSON.stringify(outgoingDraft))}
+  },[outgoingDraft])
 
-  const SearchBar = () => {
-    const [input,setInput] = useState('')
-
-    useEffect(()=>{
-      setChampList(champList?.filter(array => array[0].toLowerCase().includes(input.toLowerCase())))
-    },[input])
-
+  const LaneFilter = () => {
     if (isDraft(draft)) {
       return(
         <div className='lane-select'>
@@ -41,7 +40,6 @@ export const BlueChampSelect = () => {
           <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(draft.midList)}}/>
           <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(draft.bottomList)}}/>
           <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(draft.supportList)}}/>
-          <input type='text' placeholder='Search...' value={input} onChange={(e)=>setInput(e.target.value)}/>
         </div>
       )
     }
@@ -49,15 +47,16 @@ export const BlueChampSelect = () => {
       <></>
     )}
   }
-  
+
   const ChampList = () => { 
+    
     const handleChampionSelection = (champion:string[]) => {
       if (isDraft(draft)){
         const newDraft:DraftList = {...draft}
         switch (draft.phase){
           case 'Ban' :{
             newDraft.blueBans[pickBanIndex.banNumber] = {champ:champion[0],icon:champion[1]}
-            setDraft(newDraft)
+            setOutgoingDraft(newDraft)
             setPickBanIndex({...pickBanIndex,banNumber:pickBanIndex.banNumber+1})
             break
           }
@@ -68,15 +67,14 @@ export const BlueChampSelect = () => {
             break
           }
         }
-      }
-      
+      } 
     }
     
     if (isDraft(draft)) {
       if (draft.turn==='Blue') {
         return(
           <div className='champ-list'>
-            {draft.champList.map((champion)=>{
+            {champList?.filter(array => array[0].toLowerCase().includes(input.toLowerCase())).map((champion)=>{
               return(
                 <div 
                   className='champion' 
@@ -166,8 +164,9 @@ export const BlueChampSelect = () => {
   
   if (isDraft(draft))  {
     return (
-      <div className='champion-select'>
-        <SearchBar/>
+      <div className='champ-select'>
+        <input placeholder='Search...' value={input} onChange={(e)=>{setInput(e.target.value)}}/>
+        <LaneFilter/>
         <ChampList/>
         <BlueBans/>
         <RedBans/>

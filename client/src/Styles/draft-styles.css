@@ -1,15 +1,20 @@
-.grid-container {
+.draft-container {
     display: grid;
-    grid-template-columns: 25% 50% 25%;
-    grid-template-rows: 10% 80% 10%;
+    /*grid-template-columns: 25% 50% 25%;
+    grid-template-rows: 10% 80% 10%;*/
     grid-template-areas: 
-    'count-down red-side'
+    'header'
     'champ-select'
-    'lock-button';
+    'footer';
     height: 100vh;
     width: 100%;
 }
 
+.champ-select {
+    grid-area: champ-select;
+}
+
+/*
 .timer{
     grid-area: count-down;
     display:flex;
@@ -20,15 +25,7 @@
     font-weight: 700;
 }
 
-.champ-select {
-    grid-area: champ-select;
-    background-color: aqua;
-    display: grid;
-    grid-template-rows: 10% 90%;
-    grid-template-areas: 
-    'lane-select search-bar'
-    'champ-list champ-list';
-}
+
 
 .search-bar{
     grid-area: search-bar;
@@ -66,4 +63,4 @@
 .ban-image{
     height: 86px;
     width: 86px;
-}
+}*/

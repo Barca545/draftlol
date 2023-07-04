@@ -36,3 +36,11 @@ export interface PickBanIndex {
     pickNumber: number,
     banNumber:number
 }
+
+export interface Timer {
+    seconds: number
+}
+
+export function isTimer(requestBody: Timer | DraftList| null):requestBody is Timer {
+    return (requestBody as Timer).seconds !== undefined
+}
