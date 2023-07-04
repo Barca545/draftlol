@@ -17,7 +17,6 @@ export const CountdownTimer = () => {
     onMessage: (message:WebSocketEventMap['message']) => {
       let timer:Timer = JSON.parse(message.data)
       setTime(timer)
-      console.log(timer)
     },
     share:false, 
     retryOnError: true,

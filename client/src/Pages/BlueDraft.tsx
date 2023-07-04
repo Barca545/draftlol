@@ -8,6 +8,7 @@ import { useGetListQuery } from '../App/Slices/apiSlice'
 import { initialDraftList } from '../App/InitialStates/initialDraftList'
 import Bans from '../Components/Bans';
 import { CountdownTimer } from '../Components/CountdownTimer'
+import { ChampSelect } from '../Components/ChampSelect'
 
 export const BlueDraft = () => {
   const { data, isLoading, isSuccess } = useGetListQuery('draftlist/')
@@ -30,41 +31,35 @@ export const BlueDraft = () => {
   const { sendMessage, readyState } = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
-    onMessage: (message: WebSocketEventMap['message']) => {
-      let data: DraftList = JSON.parse(message.data)
-      if (!isTimer(data)) {
-        ///let incomingDraft =
-        setDraft(data)
-      }
+    onMessage: (message:WebSocketEventMap['message']) => {
+      let data:DraftList = JSON.parse(message.data)
+      setDraft(data)
+      console.log(draft)
     },
-    share: true, ///maybe share should be false
+    share:false, ///maybe share should be false
     retryOnError: true,
     shouldReconnect: () => true
   })
 
-  useEffect(() => {
-    if (banIndex === 3 && pickIndex < 3) { setBanPhase(false) }
-    else if (banIndex === 3 && pickIndex === 3) { setBanPhase(true) }
-    else if (banIndex === 5 && pickIndex === 3) { setBanPhase(false) }
-    ///this is causing the entire page to refresh
-    ///another solution might be to disambiguate the JSON and have the champlist be its own thing
-    ///then I can reset champlist only after confirm
-    if (readyState === ReadyState.OPEN && updatedDraft !== null) {
-      sendMessage(JSON.stringify(updatedDraft))
-    }
-  }, [readyState, updatedDraft, banIndex, pickIndex])
+  useEffect(()=>{
+    
+
+  },[draft])
 
 
   const handleConfirm = () => {
-    if (currentSelection !== null) {
-      const newDraftList = {
-        ...draft,
-        champList: [...draft.champList.filter((item) => item[0] !== currentSelection[0])],
-        topList: [...draft.topList.filter((item) => item[0] !== currentSelection[0])],
-        jgList: [...draft.jgList.filter((item) => item[0] !== currentSelection[0])],
-        midList: [...draft.midList.filter((item) => item[0] !== currentSelection[0])],
-        bottomList: [...draft.bottomList.filter((item) => item[0] !== currentSelection[0])],
-        supportList: [...draft.supportList.filter((item) => item[0] !== currentSelection[0])],
+    if (banIndex === 3 && pickIndex < 3 ){setBanPhase(false)}
+    else if (banIndex === 3 && pickIndex === 3 ){setBanPhase(true)}
+    else if (banIndex === 5 && pickIndex === 3 ){setBanPhase(false)}
+
+    if (currentSelection!==null){    
+      const newDraftList = {...draft,
+        champList:[...draft.champList.filter((item)=>item[0]!==currentSelection[0])],
+        topList: [...draft.topList.filter((item)=>item[0]!==currentSelection[0])],
+        jgList:[...draft.jgList.filter((item)=>item[0]!==currentSelection[0])],
+        midList:[...draft.midList.filter((item)=>item[0]!==currentSelection[0])],
+        bottomList:[...draft.bottomList.filter((item)=>item[0]!==currentSelection[0])],
+        supportList:[...draft.supportList.filter((item)=>item[0]!==currentSelection[0])],
       }
       setDraft(newDraftList)
       setUpdatedDraft(newDraftList)
@@ -83,11 +78,10 @@ export const BlueDraft = () => {
     }
   }
 
-  ///what is causing the whole app to rerender?
-  const ChampSelect = () => {
-    const [champList, setChampList] = useState(draft.champList)
-    const [input, setInput] = useState('')
-    const [laneView, setLaneView] = useState('ALL')
+  /*const ChampSelect = () => {
+    const [champList,setChampList] = useState(draft.champList) 
+    const [input,setInput] = useState('')
+    const [laneView,setLaneView] = useState('ALL')
 
     useEffect(() => {
       if (laneView === 'TOP') { }
@@ -166,7 +160,7 @@ export const BlueDraft = () => {
         <ChampList />
       </div>
     )
-  }
+  }*/
 
   const RoleSelect = () => {
     return (
