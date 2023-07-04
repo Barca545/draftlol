@@ -75,6 +75,7 @@ var Matches = /** @class */ (function () {
         };
         this.handleMessage = function (message, matchid) {
             var clientData = JSON.parse(message.toString());
+            console.log(clientData);
             var match = _this.findMatch(matchid);
             if ((0, type_guards_1.isTimer)(clientData)) {
                 match.broadcastTimer(clientData);

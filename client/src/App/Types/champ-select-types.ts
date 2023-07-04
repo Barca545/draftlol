@@ -1,5 +1,4 @@
 export interface Summoner {
-    name:string|null,
     champ: string|null,
     icon: string
 }
@@ -10,11 +9,12 @@ export interface Ban {
 }
 
 export interface DraftList{
-    blueBanlist: Ban[],
-    blueSummonerlist: Summoner[],
-    redBanlist: Ban[],
-    redSummonerlist: Summoner[],
-    blueTurn: boolean,
+    blueBans: Ban[],
+    bluePicks: Summoner[],
+    redBans: Ban[],
+    redPicks: Summoner[],
+    phase: 'Pick' | 'Ban'
+    turn: 'Blue'|'Red',
     champList: string[][],
     topList:string[][],
     jgList:string[][],
@@ -23,9 +23,8 @@ export interface DraftList{
     supportList:string[][],
 }
 
-export interface Timer {
-    ///minutes: number,
-    seconds: number
+export function isDraft(requestBody: DraftList| null):requestBody is DraftList {
+    return (requestBody as DraftList)!== null
 }
 
 export interface ChampSelection {
@@ -33,9 +32,13 @@ export interface ChampSelection {
     icon: string
 }
 
-export interface DraftRequest {
-    ///channel: string 
-    requestBody: DraftList | Timer
+export interface PickBanIndex {
+    pickNumber: number,
+    banNumber:number
+}
+
+export interface Timer {
+    seconds: number
 }
 
 export function isTimer(requestBody: Timer | DraftList| null):requestBody is Timer {
