@@ -1,0 +1,126 @@
+/* need to update the styles so the formating persists */
+
+.page-container {
+    font-family: 'beaufort-pro';
+    background-color: #061c25;
+}
+
+.blue-side {
+    grid-area: blue-side;
+    display:grid;
+    gap: 10px;
+    padding: 1rem;
+}
+
+.summoner {
+    display: flex;
+    align-items: center;
+    background-color: rgb(0, 102, 128);
+    height: 135px;
+}
+
+.red-side {
+    grid-area: red-side;
+    display:grid;
+    gap: 10px;
+    padding: 10px;
+}
+
+.blue-side-bans{
+    grid-area: blue-side-bans;
+    background-color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.red-side-bans{
+    grid-area: red-side-bans;
+    background-color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.lock-button {
+    grid-area: lock-button;
+    display: flex;
+    background-color: rgb(194 144 45);
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    grid-template-rows: 10% 80% 10%;
+    grid-template-areas: 
+    'blue-side champ-select red-side'
+    'blue-side champ-select red-side'
+    'blue-side-bans lock-button red-side-bans';
+    height: 100vh;
+    width: 100%;
+}
+
+.timer {
+    grid-area: count-down;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color: cornsilk;
+    font-size: 200%;
+    font-weight: 700;
+}
+
+.champ-select {
+    grid-area: champ-select;
+    display: grid;
+    padding: 1rem;
+    grid-template-areas: 
+    'lane-select countdown-timer search-bar'
+    'champ-list champ-list champ-list';
+}
+
+.sort-and-search {
+    display: flex;
+}
+
+.search-bar{
+    grid-area: search-bar;
+    background-color: rgb(202, 178, 202);
+ }
+
+.champ-list{
+    grid-area: champ-list;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 135px);
+    justify-content: space-around;
+    overflow-y: scroll;
+}
+
+.champion {
+    height: 135px;
+}
+
+.champselect-image {
+    height: 100%;
+    width: 150px;
+    object-fit: cover;
+}
+
+.ban-image{
+    height: 86px;
+    width: 86px;
+}
+
+.team-banners {
+    height: 3rem;
+    font-size: 3rem;
+    font-weight: 800;
+    font-style: italic;
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 1rem;
+}

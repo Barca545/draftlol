@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import '../Pages/draft-styles.css'
+import '../Pages/draft-styles.scss'
 import { DraftList,isTimer} from '../App/Types/champ-select-types'
 import { BASE_URL } from '../App/Slices/baseurl'
 import {useWebSocket} from 'react-use-websocket/dist/lib/use-websocket'
@@ -268,23 +268,23 @@ export const RedDraft = () => {
     if (draftIsSuccess) {
       return(
         <div className="red-side">
-        <div className='red-summoner-1'>
+        <div className='summoner'>
           <RoleSelect/>
           <img className='champselect-image' src={newDraft.redSummonerlist[0].icon} alt=''/>
         </div>
-        <div className='red-summoner-2'>
+        <div className='summoner'>
           <RoleSelect/>
           <img className='champselect-image' src={newDraft.redSummonerlist[1].icon} alt=''/>
         </div>
-        <div className='red-summoner-3'>
+        <div className='summoner'>
           <RoleSelect/>
           <img className='champselect-image' src={newDraft.redSummonerlist[2].icon} alt=''/>
         </div>
-        <div className='red-summoner-4'>
+        <div className='summoner'>
           <RoleSelect/>
         <img className='champselect-image' src={newDraft.redSummonerlist[3].icon} alt=''/>   
         </div>
-        <div className='red-summoner-5'>
+        <div className='summoner'>
           <RoleSelect/>
           <img className='champselect-image' src={newDraft.redSummonerlist[4].icon} alt=''/>
         </div>
