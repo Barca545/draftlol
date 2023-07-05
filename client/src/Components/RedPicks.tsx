@@ -21,19 +21,19 @@ export const RedPicks = () => {
   if (isDraft(draft)) {
     return(
       <div className="red-picks">
-        <div className='summoner'>
+        <div className='red-summoner'>
           <img className='champselect-image' src={draft.redPicks[0].icon} alt=''/>
         </div>
-        <div className='summoner'>
+        <div className='red-summoner'>
           <img className='champselect-image' src={draft.redPicks[1].icon} alt=''/>
         </div>
-        <div className='summoner'>
+        <div className='red-summoner'>
           <img className='champselect-image' src={draft.redPicks[2].icon} alt=''/>
         </div>
-        <div className='summoner'>
+        <div className='red-summoner'>
           <img className='champselect-image' src={draft.redPicks[3].icon} alt=''/>   
         </div>
-        <div className='summoner'>
+        <div className='red-summoner'>
           <img className='champselect-image' src={draft.redPicks[4].icon} alt=''/>
         </div>
       </div>

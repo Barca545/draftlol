@@ -6,12 +6,14 @@ import { BlueDraft } from './Pages/BlueDraft';
 
 function App() {  
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' index element={<CreateDraft/>}/>
-        <Route path='/blueside' index element={<BlueDraft/>}/>
-      </Routes>  
-    </BrowserRouter>
+    <div className="page-container">
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' index element={<CreateDraft/>}/>
+          <Route path='/blueside' index element={<BlueDraft/>}/>
+        </Routes>  
+      </BrowserRouter>
+    </div>
   );
 }
 export default App;

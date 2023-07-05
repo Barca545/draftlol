@@ -5,6 +5,11 @@ import { DraftList, PickBanIndex, isDraft} from '../App/Types/champ-select-types
 import { initalAllChamps } from './initialStates/initalAllChamps' 
 import { useAppSelector, useAppDispatch } from '../App/hooks'
 import { getPickIndex, getBanIndex, setBanIndex, setPickIndex } from '../App/Slices/pickBanSlice'
+import top_icon from '../Assets/lane-icons/top_icon.png'
+import jungle_icon from '../Assets/lane-icons/jungle_icon.png'
+import mid_icon from '../Assets/lane-icons/mid_icon.png'
+import bot_icon from '../Assets/lane-icons/bot_icon.png'
+import support_icon from '../Assets/lane-icons/support_icon.png'
 
 export const ChampSelect = (props:any) => {
   const dispatch = useAppDispatch()
@@ -15,6 +20,13 @@ export const ChampSelect = (props:any) => {
   const [selection, setSelection] = useState<string[]|null>(null)
   const pickNumber = useAppSelector(getPickIndex)
   const banNumber = useAppSelector(getBanIndex)
+  const [isActive,setIsActive] = useState({
+    top: 'lane-button',
+    jg: 'lane-button',
+    mid: 'lane-button',
+    bot: 'lane-button',
+    sup: 'lane-button'
+  })
   
 
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
@@ -70,14 +82,80 @@ export const ChampSelect = (props:any) => {
 
   const LaneFilter = () => {
     if (isDraft(draft)) {
+      const handleFilter = (list:string[][],lane:string) => {
+        if (champList!==list) {
+          switch (lane) {
+            case 'Top': {
+              setChampList(list)
+              setIsActive({
+                top:'lane-button-active',
+                jg:'lane-button',
+                mid:'lane-button',
+                bot:'lane-button',
+                sup:'lane-button',})
+              break
+            }
+            case 'Jg': {
+              setChampList(list)
+              setIsActive({
+                top:'lane-button',
+                jg:'lane-button-active',
+                mid:'lane-button',
+                bot:'lane-button',
+                sup:'lane-button',})
+              break
+            }
+            case 'Mid': {
+              setChampList(list)
+              setIsActive({
+                top:'lane-button',
+                jg:'lane-button',
+                mid:'lane-button-active',
+                bot:'lane-button',
+                sup:'lane-button',})
+              break
+            }
+            case 'Bot': {
+              setChampList(list)
+              setIsActive({
+                top:'lane-button',
+                jg:'lane-button',
+                mid:'lane-button',
+                bot:'lane-button-active',
+                sup:'lane-button',})
+              break
+            }
+            case 'Sup': {
+              setChampList(list)
+              setIsActive({
+                top:'lane-button',
+                jg:'lane-button',
+                mid:'lane-button',
+                bot:'lane-button',
+                sup:'lane-button-active',})
+              break
+            }
+          }
+        }
+        else{
+          setChampList(draft.champList)
+          setIsActive({
+            top: 'lane-button',
+            jg: 'lane-button',
+            mid: 'lane-button',
+            bot: 'lane-button',
+            sup: 'lane-button'
+          })
+        }
+      }
+
       return(
-        <div className='lane-select'>
-          <input type='button' value={'ALL'} onClick={()=>{setChampList(draft.champList)}}/>
-          <input type='button' value={'TOP'} onClick={()=>{setChampList(draft.topList)}}/>
-          <input type='button' value={'JUNGLE'} onClick={()=>{setChampList(draft.jgList)}}/>
-          <input type='button' value={'MIDDLE'} onClick={()=>{setChampList(draft.midList)}}/>
-          <input type='button' value={'BOTTOM'} onClick={()=>{setChampList(draft.bottomList)}}/>
-          <input type='button' value={'SUPPORT'} onClick={()=>{setChampList(draft.supportList)}}/>
+        <div className='lane-filter' >
+          <img src={top_icon} className={isActive.top} onClick={()=>{handleFilter(draft.topList,'Top')}}/>
+          <img src={jungle_icon} className={isActive.jg} onClick={()=>{handleFilter(draft.jgList,'Jg')}}/>
+          <img src={mid_icon} className={isActive.mid} onClick={()=>{handleFilter(draft.midList,'Mid')}}/>
+          <img src={bot_icon} className={isActive.bot} onClick={()=>{handleFilter(draft.bottomList,'Bot')}}/>
+          <img src={support_icon} className={isActive.sup} onClick={()=>{handleFilter(draft.supportList,'Sup')}}/>
         </div>
       )
     }
@@ -86,8 +164,7 @@ export const ChampSelect = (props:any) => {
     )}
   }
 
-  const ChampList = () => { 
-
+  const ChampList = () => {
     const handleChampionSelection = (champion:string[]) => {
       setSelection(champion)
       if (isDraft(draft)){
@@ -146,10 +223,14 @@ export const ChampSelect = (props:any) => {
   if (isDraft(draft))  {
     return (
       <div className='champ-select'>
-        <input placeholder='Search...' value={input} onChange={(e)=>{setInput(e.target.value)}}/>
-        <LaneFilter/>
+        <div className='champ-select-header'>
+          <LaneFilter/>
+          <input className='search-bar' placeholder='Search...' value={input} onChange={(e)=>{setInput(e.target.value)}}/>
+        </div>
         <ChampList/>
-        <input type='button' value={'LOCK'} onClick={()=>handleConfirm()}/>
+        <div className="champ-select-footer">
+          <input className="lock-button" value={'LOCK IN'} type="button" onClick={()=>handleConfirm()}/>
+        </div>
       </div>
     )  
   }

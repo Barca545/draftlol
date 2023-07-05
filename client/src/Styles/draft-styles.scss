@@ -1,0 +1,186 @@
+.page-container {
+    font-family: 'beaufort-pro';
+    background-color: #061c25;
+    overflow: hidden;
+}
+
+.draft-container {
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    grid-template-rows: 10% 70% 20%;
+    grid-template-areas: 
+    'draft-container-header draft-container-header draft-container-header'
+    'blue-picks champ-select red-picks'
+    'blue-bans champ-select red-bans';
+    height: 100vh;
+    width: 100vw;
+}
+
+.champ-select {
+    grid-area: champ-select;
+    display: grid;
+    padding: 1rem;
+    grid-template-rows: 10% 68% 22%; ///no clue why at 94% it is too big
+    grid-template-areas: 
+    'champ-select-header'
+    'champ-list'
+    'champ-select-footer';
+    background-color: #021117;
+}
+
+.champ-select-header{
+    grid-area: champ-select-header;
+    display: grid;
+    grid-template-areas: 'lane-filter search-bar';
+}
+
+.lane-filter{
+    grid-area: lane-filter;
+    display: grid;
+    grid-template-columns: 16% 16% 16% 16% 16% 16%;
+    gap: 1rem;
+    padding-right: 1rem;
+}
+
+.search-bar{
+    grid-area: search-bar;
+    background-color: rgb(202, 178, 202);
+    font-size: 1.2rem;
+}
+
+.lane-button{
+    transition-duration: 0.4s;
+}
+
+.lane-button:hover {
+background-color: #ebebb2;
+}
+
+.lane-button-active {
+    background-color: #ebebb2;
+}
+
+.champ-list{
+    grid-area: champ-list;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 135px);
+    justify-content: space-around;
+    overflow-y: scroll;
+}
+
+.blue-picks {
+    grid-area: blue-picks;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 1rem;
+}
+
+.red-picks {
+    grid-area: red-picks;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.summoner {
+    display: flex;
+    align-items: center;
+    background-color: rgb(0, 102, 128);
+    height: 135px;
+}
+
+.red-summoner {
+    display: flex;
+    align-items: center;
+    background-color: rgb(0, 102, 128);
+    height: 135px;
+    justify-content: right;
+}
+
+.champselect-image {
+    height: 100%;
+    width: 150px;
+    object-fit: cover;
+}
+
+.champ-select-footer{
+    grid-area: champ-select-footer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lock-button{
+    background-color: rgb(194 144 45);
+    height: 5rem;
+    width: 18rem;
+    transition-duration: 0.2s;
+    border-top-left-radius: 30%;
+    border-top-right-radius: 30%;    
+}
+
+.lock-button:hover{
+    background-color: rgb(198, 169, 112);
+}
+
+.blue-bans{
+    grid-area: blue-bans;
+    background-color: #021117;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 2rem;
+    padding-left: 1rem;
+}
+
+.red-bans{
+    grid-area: red-bans;
+    background-color: #021117;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 2rem;
+    padding-right: 1rem;
+}
+
+.ban-image{
+    height: 6.5rem;
+    width: 6.5rem;
+    border-style: solid;
+    border-width: .1rem;
+    border-color: white;
+}
+
+
+/* 
+.timer {
+    grid-area: count-down;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color: cornsilk;
+    font-size: 200%;
+    font-weight: 700;
+}
+
+.sort-and-search {
+    display: flex;
+}
+
+.champion {
+    height: 135px;
+}
+
+.team-banners {
+    height: 3rem;
+    font-size: 3rem;
+    font-weight: 800;
+    font-style: italic;
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 1rem;
+}
+*/

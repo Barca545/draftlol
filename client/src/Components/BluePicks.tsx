@@ -40,6 +40,6 @@ export const BluePicks = () => {
       )
     }
     else{
-      return(<></>)
+      return(<>test</>)
     }
   }

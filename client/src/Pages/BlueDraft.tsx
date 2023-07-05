@@ -3,15 +3,17 @@ import { BluePicks } from "../Components/BluePicks";
 import { RedPicks } from "../Components/RedPicks";
 import { RedBans } from '../Components/RedBans'
 import { ChampSelect } from "../Components/ChampSelect";
+import '../Styles/draft-styles.scss'
 
 export const BlueDraft = () => {
+  
   return(
-    <>
-      <BlueBans/>
+    <div className="draft-container">
+      <ChampSelect side={'Blue'}/>
       <BluePicks/>
-      <ChampSelect side={'Red'}/>
-      <RedBans/>
       <RedPicks/>
-    </>
+      <BlueBans/>
+      <RedBans/>
+    </div>
   )
 }
