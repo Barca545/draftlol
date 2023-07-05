@@ -146,97 +146,12 @@ export const BlueChampSelect = () => {
     else {return(<></>)}
   }
   
-  const BlueBans = () => {
-    if (draft!==null) {
-      return(
-        <div className='blue-side-bans'>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.blueBans[0].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.blueBans[1].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.blueBans[2].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.blueBans[3].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.blueBans[4].icon} alt=''/>
-          </span>
-        </div>
-      )
-    }
-    else {return(<></>)}
-  }
-
-  const BluePicks = () => {
-    if (isDraft(draft)) {
-      return(
-        <div className="blue-side">
-          <div className='blue-summoner-1'>
-            <img className='champselect-image' src={draft.bluePicks[0].icon} alt=''/>
-          </div>
-          <div className='blue-summoner-2'>
-            <img className='champselect-image' src={draft.bluePicks[1].icon} alt=''/>
-          </div>
-          <div className='blue-summoner-3'>
-            <img className='champselect-image' src={draft.bluePicks[2].icon} alt=''/>
-          </div>
-          <div className='blue-summoner-4'>
-            <img className='champselect-image' src={draft.bluePicks[3].icon} alt=''/>   
-          </div>
-          <div className='blue-summoner-5'>
-            <img className='champselect-image' src={draft.bluePicks[4].icon} alt=''/>
-          </div>
-        </div>
-      )
-    }
-    else{
-      return(<></>)
-    }
-  }
-
-  const RedBans = () => {
-    if (draft!==null) {
-      return(
-        <div className='red-side-bans'>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.redBans[0].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.redBans[1].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.redBans[2].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.redBans[3].icon} alt=''/>
-          </span>
-          <span className='ban-image-wrapper'>
-            <img className='ban-image' src={draft.redBans[4].icon} alt=''/>
-          </span>
-        </div>
-      )
-    }
-    else {return(<></>)}
-  }
-
-  const RedPicks = () => {
-    return(<></>)
-  }
-  
   if (isDraft(draft))  {
     return (
       <div className='champ-select'>
         <input placeholder='Search...' value={input} onChange={(e)=>{setInput(e.target.value)}}/>
         <LaneFilter/>
         <ChampList/>
-        <BlueBans/>
-        <RedBans/>
-        <RedPicks/>
-        <BluePicks/>
         <input type='button' value={'LOCK'} onClick={()=>handleConfirm()}/>
       </div>
     )  
