@@ -7,7 +7,7 @@
 .draft-container {
     display: grid;
     grid-template-columns: 25% 50% 25%;
-    grid-template-rows: 10% 70% 20%;
+    grid-template-rows: 15% 65% 20%;
     grid-template-areas: 
     'draft-container-header draft-container-header draft-container-header'
     'blue-picks champ-select red-picks'
@@ -153,34 +153,54 @@ background-color: #ebebb2;
     border-color: white;
 }
 
+.draft-container-header{
+    grid-area: draft-container-header;
+    display: grid;
+    grid-template-columns: 25% 50% 25%;
+    grid-template-areas: 
+    'blue-banner timer red-banner';
+}
 
-/* 
 .timer {
-    grid-area: count-down;
+    grid-area: timer;
     display:flex;
     justify-content: center;
     align-items: center;
-    background-color: cornsilk;
-    font-size: 200%;
-    font-weight: 700;
+    font-size: 4rem;
+    font-weight: 800;
+    color: white;
 }
 
-.sort-and-search {
-    display: flex;
-}
-
-.champion {
-    height: 135px;
-}
-
-.team-banners {
-    height: 3rem;
+.blue-banner {
+    grid-area: blue-banner;
+    display:flex;
+    justify-content: right;
+    align-items: center;
     font-size: 3rem;
     font-weight: 800;
     font-style: italic;
-    text-align: center;
     text-transform: uppercase;
     color: #fff;
+    background-color: blue;
     padding: 1rem;
+}
+
+.red-banner {
+    grid-area: red-banner;
+    display:flex;
+    justify-content: left;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: red;
+    padding: 1rem;
+}
+
+/* 
+.sort-and-search {
+    display: flex;
 }
 */
