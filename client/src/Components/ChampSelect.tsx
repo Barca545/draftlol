@@ -116,7 +116,7 @@ export const BlueChampSelect = () => {
       if (draft.turn==='Blue') {
         return(
           <div className='champ-list'>
-            {champList?.filter(array => array[0].toLowerCase().includes(input.toLowerCase())).map((champion)=>{
+            {champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())).map((champion)=>{
               return(
                 <div 
                   className='champion' 
@@ -131,7 +131,7 @@ export const BlueChampSelect = () => {
       else {
         return(
           <div className='champ-list'>
-            {draft.champList.map((champion)=>{
+            {champList.map((champion)=>{
               return(
                 <div 
                   className='champion' 
