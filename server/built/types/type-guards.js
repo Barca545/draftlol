@@ -6,7 +6,7 @@ function isTimer(requestBody) {
 }
 exports.isTimer = isTimer;
 function isDraftlist(requestBody) {
-    return requestBody.blueTurn !== undefined;
+    return requestBody.turn !== undefined;
 }
 exports.isDraftlist = isDraftlist;
 function isConnection(requestBody) {

@@ -1,0 +1,66 @@
+.draft-container {
+    display: grid;
+    /*grid-template-columns: 25% 50% 25%;
+    grid-template-rows: 10% 80% 10%;*/
+    grid-template-areas: 
+    'header'
+    'champ-select'
+    'footer';
+    height: 100vh;
+    width: 100%;
+}
+
+.champ-select {
+    grid-area: champ-select;
+}
+
+/*
+.timer{
+    grid-area: count-down;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color: cornsilk;
+    font-size: 200%;
+    font-weight: 700;
+}
+
+
+
+.search-bar{
+    grid-area: search-bar;
+    background-color: rgb(202, 178, 202);
+ }
+
+.lane-select{
+    grid-area: lane-select;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+    background-color: purple;
+}
+
+.champ-list{
+    grid-area: champ-list;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    overflow-y:scroll;
+}
+
+.champion {
+    background-color: green;
+    width: 25%;
+    height: 136.5px;
+}
+
+.champselect-image{
+    height: 136.5px;
+    width: 136.5px;
+}
+
+.ban-image{
+    height: 86px;
+    width: 86px;
+}*/

@@ -7,7 +7,7 @@ export function isTimer(requestBody: Timer | DraftList):requestBody is Timer {
 }
 
 export function isDraftlist(requestBody: Timer | DraftList):requestBody is DraftList {
-    return (requestBody as DraftList).blueTurn !== undefined
+    return (requestBody as DraftList).turn !== undefined
 }
 
 export function isConnection(requestBody: unknown):requestBody is Connection {

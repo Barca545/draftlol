@@ -7,35 +7,37 @@ import { initialSupport } from "./initialSupport";
 import { initalAllChamps } from "./initalAllChamps";
 
 export const initialDraftList:DraftList = {
-    blueBanlist: [
+    blueBans: [
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
-    blueSummonerlist: [
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+    bluePicks: [
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+
     ],
-    redBanlist: [
+    redBans: [
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
-    redSummonerlist: [
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:null,champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+    redPicks: [
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
-    blueTurn: true,
+    turn: 'Blue',
+    phase: 'Ban',
     champList:initalAllChamps,
     topList:initalTop,
     jgList:initalJungle,
