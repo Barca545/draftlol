@@ -6,10 +6,9 @@ import { initalAllChamps } from './initialStates/initalAllChamps'
 import { useAppSelector, useAppDispatch } from '../App/hooks'
 import { getPickIndex, getBanIndex, setBanIndex, setPickIndex } from '../App/Slices/pickBanSlice'
 
-export const BlueChampSelect = () => {
+export const ChampSelect = (props:any) => {
   const dispatch = useAppDispatch()
   const [draft, setDraft] = useState<DraftList|null>(null)
-  ///easiest way to avoid the infinite rerender problem is by using an outgoing draft
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [champList,setChampList] = useState(initalAllChamps)
   const [input,setInput] = useState('')
@@ -26,7 +25,7 @@ export const BlueChampSelect = () => {
       setDraft(data)
       setChampList(data.champList)
     },
-    share:false, 
+    share:true, 
     retryOnError: true,
     shouldReconnect: () => true
     })
@@ -37,10 +36,9 @@ export const BlueChampSelect = () => {
 
   const handleConfirm = () => {
     ///needs to increment pick index
-    
     if (isDraft(draft) && selection!==null){
       const newDraft:DraftList = {...draft,
-        turn: 'Red',
+        turn: props.side,
         champList:[...draft.champList.filter((item)=>item[0]!==selection[0])],
         topList: [...draft.topList.filter((item)=>item[0]!==selection[0])],
         jgList:[...draft.jgList.filter((item)=>item[0]!==selection[0])],
@@ -67,7 +65,6 @@ export const BlueChampSelect = () => {
       }
 
       setOutgoingDraft(newDraft)
-      
     }
   }
 
@@ -113,7 +110,7 @@ export const BlueChampSelect = () => {
     }
     
     if (isDraft(draft)) {
-      if (draft.turn==='Blue') {
+      if (draft.turn===props.side) {
         return(
           <div className='champ-list'>
             {champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())).map((champion)=>{

@@ -1,13 +1,13 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-
 const initialState = {
   pickIdex: 0,
   banIndex: 0
 }
+
 export const PickBanSlice = createSlice({
-  name: 'PickBan',
+  name: 'pickBan',
   initialState: initialState,
   reducers: {
     setPickIndex: (state,action: PayloadAction<number>) => {
