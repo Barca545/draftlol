@@ -1,6 +1,5 @@
 import {useEffect,useState} from 'react'
 import { Timer, isTimer} from '../App/Types/champ-select-types'
-import '../Styles/draft-styles.css'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 import { BASE_URL, MATCH_ID } from '../App/Slices/baseurl'
 

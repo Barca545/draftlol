@@ -4,8 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CreateDraft } from './Pages/CreateDraft';
 import { BlueDraft } from './Pages/BlueDraft';
 
-
-
 function App() {  
   return (
     <BrowserRouter>
