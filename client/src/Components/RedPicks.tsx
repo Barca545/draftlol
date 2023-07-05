@@ -5,19 +5,19 @@ export const RedPicks = (draft:DraftList) => {
       return(
         <div className="red-picks">
           <div className='summoner'>
-            <img className='champselect-image' src={draft.bluePicks[0].icon} alt=''/>
+            <img className='champselect-image' src={draft.redPicks[0].icon} alt=''/>
           </div>
           <div className='summoner'>
-            <img className='champselect-image' src={draft.bluePicks[1].icon} alt=''/>
+            <img className='champselect-image' src={draft.redPicks[1].icon} alt=''/>
           </div>
           <div className='summoner'>
-            <img className='champselect-image' src={draft.bluePicks[2].icon} alt=''/>
+            <img className='champselect-image' src={draft.redPicks[2].icon} alt=''/>
           </div>
           <div className='summoner'>
-            <img className='champselect-image' src={draft.bluePicks[3].icon} alt=''/>   
+            <img className='champselect-image' src={draft.redPicks[3].icon} alt=''/>   
           </div>
           <div className='summoner'>
-            <img className='champselect-image' src={draft.bluePicks[4].icon} alt=''/>
+            <img className='champselect-image' src={draft.redPicks[4].icon} alt=''/>
           </div>
         </div>
       )
