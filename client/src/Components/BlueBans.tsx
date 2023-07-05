@@ -1,7 +1,7 @@
 import { isDraft,DraftList } from "../App/Types/champ-select-types"
 
 export const BlueBans = (draft:DraftList) => {
-    if (draft!==null) {
+    if (isDraft(draft)) {
       return(
         <div className='blue-bans'>
           <span className='ban-image-wrapper'>

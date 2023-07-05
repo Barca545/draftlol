@@ -1,7 +1,7 @@
-import { DraftList } from "../App/Types/champ-select-types"
+import { isDraft,DraftList } from "../App/Types/champ-select-types"
 
 const RedBans = (draft:DraftList) => {
-    if (draft!==null) {
+    if (isDraft(draft)) {
       return(
         <div className='red-bans'>
           <span className='ban-image-wrapper'>
