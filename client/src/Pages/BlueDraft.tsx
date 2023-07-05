@@ -16,7 +16,7 @@ export const BlueDraft = () => {
         <TeamBanner side={'blue'}/>
         <TeamBanner side={'red'}/>
       </div>
-      <ChampSelect side={'Blue'}/>
+      <ChampSelect side={'Blue'} opposite={'Red'}/>
       <BluePicks/>
       <RedPicks/>
       <BlueBans/>

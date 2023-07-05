@@ -28,7 +28,6 @@ export const ChampSelect = (props:any) => {
     sup: 'lane-button'
   })
   
-
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
@@ -50,7 +49,7 @@ export const ChampSelect = (props:any) => {
     ///needs to increment pick index
     if (isDraft(draft) && selection!==null){
       const newDraft:DraftList = {...draft,
-        turn: props.side,
+        turn: props.oppposite,///this needs to be set to opposite side (needs a new prop)
         champList:[...draft.champList.filter((item)=>item[0]!==selection[0])],
         topList: [...draft.topList.filter((item)=>item[0]!==selection[0])],
         jgList:[...draft.jgList.filter((item)=>item[0]!==selection[0])],
@@ -61,7 +60,7 @@ export const ChampSelect = (props:any) => {
       switch (draft.phase) {
         case 'Ban' :{
           dispatch(setBanIndex(banNumber+1))
-          if (banNumber===3 && pickNumber<3) {
+          if (banNumber===2 && pickNumber===0 || banNumber===4 && pickNumber===3) {
             newDraft.phase = 'Pick'
           }
 
@@ -69,13 +68,12 @@ export const ChampSelect = (props:any) => {
         }
         case 'Pick' :{
           dispatch(setPickIndex(pickNumber+1))
-          if (banNumber===3 && pickNumber===3) {
+          if (banNumber===3 && pickNumber===2) {
             newDraft.phase = 'Ban'
           }
           break
         }
       }
-
       setOutgoingDraft(newDraft)
     }
   }
@@ -165,6 +163,7 @@ export const ChampSelect = (props:any) => {
   }
 
   const ChampList = () => {
+    ///disable if ban = 5 pick = 4
     const handleChampionSelection = (champion:string[]) => {
       setSelection(champion)
       if (isDraft(draft)){
@@ -173,13 +172,11 @@ export const ChampSelect = (props:any) => {
           case 'Ban' :{
             newDraft.blueBans[banNumber] = {champ:champion[0],icon:champion[1]}
             setOutgoingDraft(newDraft)
-            dispatch(setBanIndex(banNumber+1))
             break
           }
           case 'Pick':{
             newDraft.bluePicks[pickNumber] = {champ:champion[0],icon:champion[1]}
-            dispatch(setPickIndex(pickNumber+1))
-            setDraft(newDraft)
+            setOutgoingDraft(newDraft)
             break
           }
         }
@@ -195,8 +192,7 @@ export const ChampSelect = (props:any) => {
                 <div 
                   className='champion' 
                   key={champion[0]} id={champion[0]}>
-                  <img src={champion[1]} alt=''
-                  onClick={()=>handleChampionSelection(champion)}/>
+                  <img src={champion[1]} alt='' onClick={()=>handleChampionSelection(champion)}/>
                 </div>)}
               )
             }
@@ -220,6 +216,19 @@ export const ChampSelect = (props:any) => {
     else {return(<></>)}
   }
   
+  const LockIn = () =>{
+    if (banNumber<=5 && pickNumber<=4) {
+      return(
+        <input className="lock-button" value={'LOCK IN'} type="button" onClick={()=>handleConfirm()}/>
+      )
+    }
+    else {
+      return(
+        <input className="lock-button" value={'LOCK IN'} type="button"/>
+      )
+    }
+  }
+
   if (isDraft(draft))  {
     return (
       <div className='champ-select'>
@@ -229,7 +238,7 @@ export const ChampSelect = (props:any) => {
         </div>
         <ChampList/>
         <div className="champ-select-footer">
-          <input className="lock-button" value={'LOCK IN'} type="button" onClick={()=>handleConfirm()}/>
+          <LockIn/>
         </div>
       </div>
     )  
