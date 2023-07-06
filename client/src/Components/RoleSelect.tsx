@@ -1,23 +1,39 @@
-export const RoleSelect = (props:any) => {
-  const summoners:string[] = ['Fish','Envoker','adc','HappyBlueGuy','Kitten']
-  //make two extra arrays(objects?) in the draftlist RedSumnmoners and BlueSumnmoners that have 
-  //[<name>,<position>,<champions>] that get updated with the information whenever someone selects from the dropdown
-  //have ppl have to select the 'Finish" draft button that pulls up a modal to confirm the roles and then destroys the room
+import { PositionSelect } from "../App/Types/role-select-types"
+import { useState } from "react"
+
+///props will have to be the champion name so include it inside the summoner Div somewhere
+///embed this in the pick div and 
+///somehow have the div pass the champ name to this and give it the ability to update the draft
+
+export const RoleSelect = (props:{champion:string}) => {
+  const [roles, setRoles] = useState(['TOP','JUNGLE','MIDDLE','BOTTOM','SUPPORT'])
+  
+  const summoners:PositionSelect[] = [
+    {summoner:'Fish',role:'TOP',champion:null},
+    {summoner:'Ouken',role:'JUNGLE',champion:null},
+    {summoner:'HappyBlueGuy',role:'MIDDLE',champion:null},
+    {summoner:'Envoker',role:'BOTTOM',champion:null},
+    {summoner:'adc',role:'SUPPORT',champion:null}
+  ]
+
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    ///find way to have it change the other select based on the summoner given to it
+  }
+
   return(
     <div className="role-selection">
-      <select className='position-selection'>
-        <option>TOP</option>
-        <option>JUNGLE</option>
-        <option>MIDDLE</option>
-        <option>BOTTOM</option>
-        <option>SUPPORT</option>
+      <select className='position-selection' onChange={(e)=>handleSelect(e)}>
+        <option value={summoners[0].role}>{`${summoners[0].summoner}`}</option>
+        <option value={summoners[1].role}>{`${summoners[1].summoner}`}</option>
+        <option value={summoners[2].role}>{`${summoners[2].summoner}`}</option>
+        <option value={summoners[3].role}>{`${summoners[3].summoner}`}</option>
+        <option value={summoners[4].role}>{`${summoners[4].summoner}`}</option>
       </select>
       <select className='position-selection'>
-        <option>{`${summoners[0]}`}</option>
-        <option>{`${summoners[1]}`}</option>
-        <option>{`${summoners[2]}`}</option>
-        <option>{`${summoners[3]}`}</option>
-        <option>{`${summoners[4]}`}</option>
+        {roles.map((role)=>{
+          return(
+            <option>{role}</option>
+          )})}
       </select>
     </div>
   )  

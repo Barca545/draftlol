@@ -5,7 +5,7 @@ import { RoleSelect } from "../Components/RoleSelect"
 export const CreateDraft = () => {
   return (
     <div className="draft-container">
-      <RoleSelect/>
+      <RoleSelect champion=''/>
     </div>
   )
 }
