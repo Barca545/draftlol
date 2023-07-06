@@ -13,8 +13,8 @@ export interface DraftList{
     bluePicks: Summoner[],
     redBans: Ban[],
     redPicks: Summoner[],
-    phase: 'Pick' | 'Ban'
-    turn: 'Blue'|'Red',
+    turnNumber: number,
+    turn: 'Red' | 'Blue'| 'Done',
     champList: string[][],
     topList:string[][],
     jgList:string[][],
