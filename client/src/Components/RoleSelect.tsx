@@ -6,7 +6,7 @@ import { useState } from "react"
 ///somehow have the div pass the champ name to this and give it the ability to update the draft
 
 export const RoleSelect = (props:{champion:string}) => {
-  const [roles, setRoles] = useState(['TOP','JUNGLE','MIDDLE','BOTTOM','SUPPORT'])
+  const [position, setPosition] = useState('TOP')
   
   const summoners:PositionSelect[] = [
     {summoner:'Fish',role:'TOP',champion:null},
@@ -16,24 +16,21 @@ export const RoleSelect = (props:{champion:string}) => {
     {summoner:'adc',role:'SUPPORT',champion:null}
   ]
 
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    ///find way to have it change the other select based on the summoner given to it
-  }
-
   return(
     <div className="role-selection">
-      <select className='position-selection' onChange={(e)=>handleSelect(e)}>
+      <select className='summoner-selection' onChange={(e)=>setPosition(e.target.value)}>
         <option value={summoners[0].role}>{`${summoners[0].summoner}`}</option>
         <option value={summoners[1].role}>{`${summoners[1].summoner}`}</option>
         <option value={summoners[2].role}>{`${summoners[2].summoner}`}</option>
         <option value={summoners[3].role}>{`${summoners[3].summoner}`}</option>
         <option value={summoners[4].role}>{`${summoners[4].summoner}`}</option>
       </select>
-      <select className='position-selection'>
-        {roles.map((role)=>{
-          return(
-            <option>{role}</option>
-          )})}
+      <select className='position-selection' value={position} onChange={e=>setPosition(e.target.value)}>
+        <option value={'TOP'}>{'TOP'}</option>
+        <option value={'JUNGLE'}>{'JUNGLE'}</option>
+        <option value={'MIDDLE'}>{'MIDDLE'}</option>
+        <option value={'BOTTOM'}>{'BOTTOM'}</option>
+        <option value={'SUPPORT'}>{'SUPPORT'}</option>
       </select>
     </div>
   )  
