@@ -1,10 +1,8 @@
 import {useEffect, useState } from 'react'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 import { BASE_URL,MATCH_ID } from '../App/Slices/baseurl'
-import { DraftList, PickBanIndex, isDraft} from '../App/Types/champ-select-types'
+import { DraftList, isDraft} from '../App/Types/champ-select-types'
 import { initalAllChamps } from './initialStates/initalAllChamps' 
-import { useAppSelector, useAppDispatch } from '../App/hooks'
-import { getPickIndex, getBanIndex, setBanIndex, setPickIndex } from '../App/Slices/pickBanSlice'
 import top_icon from '../Assets/lane-icons/top_icon.png'
 import jungle_icon from '../Assets/lane-icons/jungle_icon.png'
 import mid_icon from '../Assets/lane-icons/mid_icon.png'
@@ -12,14 +10,11 @@ import bot_icon from '../Assets/lane-icons/bot_icon.png'
 import support_icon from '../Assets/lane-icons/support_icon.png'
 
 export const ChampSelect = (props:any) => {
-  const dispatch = useAppDispatch()
   const [draft, setDraft] = useState<DraftList|null>(null)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [champList,setChampList] = useState(initalAllChamps)
   const [input,setInput] = useState('')
   const [selection, setSelection] = useState<string[]|null>(null)
-  const pickNumber = useAppSelector(getPickIndex)
-  const banNumber = useAppSelector(getBanIndex)
   const [isActive,setIsActive] = useState({
     top: 'lane-button',
     jg: 'lane-button',
@@ -49,7 +44,7 @@ export const ChampSelect = (props:any) => {
     ///needs to increment pick index
     if (isDraft(draft) && selection!==null){
       const newDraft:DraftList = {...draft,
-        turn: props.oppposite,///this needs to be set to opposite side (needs a new prop)
+        turnNumber: draft.turnNumber+1,
         champList:[...draft.champList.filter((item)=>item[0]!==selection[0])],
         topList: [...draft.topList.filter((item)=>item[0]!==selection[0])],
         jgList:[...draft.jgList.filter((item)=>item[0]!==selection[0])],
@@ -57,24 +52,86 @@ export const ChampSelect = (props:any) => {
         bottomList:[...draft.bottomList.filter((item)=>item[0]!==selection[0])],
         supportList:[...draft.supportList.filter((item)=>item[0]!==selection[0])]
       }
-      switch (draft.phase) {
-        case 'Ban' :{
-          dispatch(setBanIndex(banNumber+1))
-          if (banNumber===2 && pickNumber===0 || banNumber===4 && pickNumber===3) {
-            newDraft.phase = 'Pick'
-          }
-
+      switch(draft.turnNumber) {
+        case 0: {
+          newDraft.turn = 'Red'
           break
         }
-        case 'Pick' :{
-          dispatch(setPickIndex(pickNumber+1))
-          if (banNumber===3 && pickNumber===2) {
-            newDraft.phase = 'Ban'
-          }
+        case 1: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 2: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 3: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 4: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 5: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 6: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 7: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 8: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 9: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 10: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 11: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 12: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 13: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 14: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 15: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 16: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 17: {
+          newDraft.turn = 'Blue'
+          break
+        }
+        case 18: {
+          newDraft.turn = 'Done'
           break
         }
       }
       setOutgoingDraft(newDraft)
+      console.log(newDraft)
     }
   }
 
@@ -163,23 +220,93 @@ export const ChampSelect = (props:any) => {
   }
 
   const ChampList = () => {
-    ///disable if ban = 5 pick = 4
     const handleChampionSelection = (champion:string[]) => {
       setSelection(champion)
       if (isDraft(draft)){
         const newDraft:DraftList = {...draft}
-        switch (draft.phase){
-          case 'Ban' :{
-            newDraft.blueBans[banNumber] = {champ:champion[0],icon:champion[1]}
-            setOutgoingDraft(newDraft)
+        switch(draft.turnNumber) {
+          case 0: {
+            newDraft.blueBans[0] = {champ:champion[0],icon:champion[1]}
             break
           }
-          case 'Pick':{
-            newDraft.bluePicks[pickNumber] = {champ:champion[0],icon:champion[1]}
-            setOutgoingDraft(newDraft)
+          case 1: {
+            newDraft.redBans[0] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 2: {
+            newDraft.blueBans[1] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 3: {
+            newDraft.redBans[1] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 4: {
+            newDraft.blueBans[2] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 5: {
+            newDraft.redBans[2] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 6: {
+            newDraft.bluePicks[0] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 7: {
+            newDraft.redPicks[0] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 8: {
+            newDraft.redPicks[1] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 9: {
+            newDraft.bluePicks[1] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 10: {
+            newDraft.bluePicks[2] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 11: {
+            newDraft.redPicks[2] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 12: {
+            newDraft.redBans[3] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 13: {
+            newDraft.blueBans[3] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 14: {
+            newDraft.redBans[4] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 15: {
+            newDraft.blueBans[4] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 16: {
+            newDraft.redPicks[3] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 17: {
+            newDraft.bluePicks[3] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 18: {
+            newDraft.bluePicks[4] = {champ:champion[0],icon:champion[1]}
+            break
+          }
+          case 19: {
+            newDraft.redPicks[4] = {champ:champion[0],icon:champion[1]}
             break
           }
         }
+        setOutgoingDraft(newDraft)
       } 
     }
     
@@ -217,7 +344,7 @@ export const ChampSelect = (props:any) => {
   }
   
   const LockIn = () =>{
-    if (banNumber<=5 && pickNumber<=4) {
+    if (isDraft(draft)) {
       return(
         <input className="lock-button" value={'LOCK IN'} type="button" onClick={()=>handleConfirm()}/>
       )
