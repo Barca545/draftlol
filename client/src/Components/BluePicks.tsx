@@ -2,6 +2,7 @@ import { isDraft,DraftList } from "../App/Types/champ-select-types"
 import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl"
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket"
 import { useState } from "react"
+import { RoleSelect } from "./RoleSelect"
 
 export const BluePicks = () => {
   const [draft, setDraft] = useState<DraftList|null>(null)
@@ -22,7 +23,7 @@ export const BluePicks = () => {
     return(
       <div className="blue-picks">
         <div className='summoner'>
-          <img className='champselect-image' src={draft.bluePicks[0].icon} alt=''/>
+          <img className='champselect-image' src={draft.bluePicks[0].icon} alt=''/> 
         </div>
         <div className='summoner'>
           <img className='champselect-image' src={draft.bluePicks[1].icon} alt=''/>
@@ -31,7 +32,7 @@ export const BluePicks = () => {
           <img className='champselect-image' src={draft.bluePicks[2].icon} alt=''/>
         </div>
         <div className='summoner'>
-          <img className='champselect-image' src={draft.bluePicks[3].icon} alt=''/>   
+          <img className='champselect-image' src={draft.bluePicks[3].icon} alt=''/>  
         </div>
         <div className='summoner'>
           <img className='champselect-image' src={draft.bluePicks[4].icon} alt=''/>

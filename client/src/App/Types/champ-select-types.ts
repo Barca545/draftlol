@@ -1,18 +1,22 @@
-export interface Summoner {
+import { PositionSelect } from "./role-select-types"
+
+export interface Ban {
     champ: string|null,
     icon: string
 }
 
-export interface Ban {
-    champ: string | null,
-    icon: string
+export interface Summoner {
+    summonerName: string,
+    role: string,
+    champion: string,
+    icon: string,
 }
 
 export interface DraftList{
-    blueBans: Ban[],
     bluePicks: Summoner[],
-    redBans: Ban[],
     redPicks: Summoner[],
+    redBans: Ban[],
+    blueBans: Ban[],
     turnNumber: number,
     turn: 'Red' | 'Blue'| 'Done',
     champList: string[][],
