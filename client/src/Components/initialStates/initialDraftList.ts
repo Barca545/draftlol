@@ -15,11 +15,11 @@ export const initialDraftList:DraftList = {
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
     bluePicks: [
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
 
     ],
     redBans: [
@@ -30,11 +30,11 @@ export const initialDraftList:DraftList = {
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
     redPicks: [
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
     turnNumber: 0,
     turn: 'Blue',

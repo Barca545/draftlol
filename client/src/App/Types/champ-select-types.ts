@@ -6,9 +6,9 @@ export interface Ban {
 }
 
 export interface Summoner {
-    summonerName: string,
+    name: string,
     role: string,
-    champion: string,
+    champ: string,
     icon: string,
 }
 

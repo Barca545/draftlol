@@ -8,6 +8,7 @@ import jungle_icon from '../Assets/lane-icons/jungle_icon.png'
 import mid_icon from '../Assets/lane-icons/mid_icon.png'
 import bot_icon from '../Assets/lane-icons/bot_icon.png'
 import support_icon from '../Assets/lane-icons/support_icon.png'
+import { LockIn } from './LockIn'
 
 export const ChampSelect = (props:any) => {
   const [draft, setDraft] = useState<DraftList|null>(null)
@@ -40,7 +41,7 @@ export const ChampSelect = (props:any) => {
     if (isDraft(outgoingDraft)){sendMessage(JSON.stringify(outgoingDraft))}
   },[outgoingDraft])
 
-  const handleConfirm = () => {
+ /* const handleConfirm = () => {
     ///needs to increment pick index
     if (isDraft(draft) && selection!==null){
       const newDraft:DraftList = {...draft,
@@ -122,10 +123,14 @@ export const ChampSelect = (props:any) => {
           break
         }
         case 17: {
-          newDraft.turn = 'Blue'
+          newDraft.turn = 'Done'
           break
         }
         case 18: {
+          newDraft.turn = 'Red'
+          break
+        }
+        case 19: {
           newDraft.turn = 'Done'
           break
         }
@@ -133,7 +138,7 @@ export const ChampSelect = (props:any) => {
       setOutgoingDraft(newDraft)
       console.log(newDraft)
     }
-  }
+  }*/
 
   const LaneFilter = () => {
     if (isDraft(draft)) {
@@ -250,27 +255,27 @@ export const ChampSelect = (props:any) => {
             break
           }
           case 6: {
-            newDraft.bluePicks[0] = {champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[0] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 7: {
-            newDraft.redPicks[0] = {champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[0] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 8: {
-            newDraft.redPicks[1] = {champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[1] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 9: {
-            newDraft.bluePicks[1] = {champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[1] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 10: {
-            newDraft.bluePicks[2] = {champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[2] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 11: {
-            newDraft.redPicks[2] = {champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[2] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 12: {
@@ -290,19 +295,19 @@ export const ChampSelect = (props:any) => {
             break
           }
           case 16: {
-            newDraft.redPicks[3] = {champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[3] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 17: {
-            newDraft.bluePicks[3] = {champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[3] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 18: {
-            newDraft.bluePicks[4] = {champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[4] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
           case 19: {
-            newDraft.redPicks[4] = {champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[4] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
         }
@@ -343,7 +348,7 @@ export const ChampSelect = (props:any) => {
     else {return(<></>)}
   }
   
-  const LockIn = () =>{
+  /*const LockIn = () =>{
     if (isDraft(draft)) {
       return(
         <input className="lock-button" value={'LOCK IN'} type="button" onClick={()=>handleConfirm()}/>
@@ -354,7 +359,7 @@ export const ChampSelect = (props:any) => {
         <input className="lock-button" value={'LOCK IN'} type="button"/>
       )
     }
-  }
+  }*/
 
   if (isDraft(draft))  {
     return (
@@ -365,7 +370,7 @@ export const ChampSelect = (props:any) => {
         </div>
         <ChampList/>
         <div className="champ-select-footer">
-          <LockIn/>
+          <LockIn selection={selection} draft={draft}/>
         </div>
       </div>
     )  
