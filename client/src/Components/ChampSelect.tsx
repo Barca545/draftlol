@@ -15,7 +15,7 @@ export const ChampSelect = (props:any) => {
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [champList,setChampList] = useState(initalAllChamps)
   const [input,setInput] = useState('')
-  const [selection, setSelection] = useState<string[]|null>(null)
+  const [selection, setSelection] = useState<string[]>([])
   const [isActive,setIsActive] = useState({
     top: 'lane-button',
     jg: 'lane-button',
@@ -23,7 +23,7 @@ export const ChampSelect = (props:any) => {
     bot: 'lane-button',
     sup: 'lane-button'
   })
-  
+  ///not sure if this being blueside/redside is affecting it
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),

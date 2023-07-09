@@ -19,7 +19,7 @@ export const RoleSelect = (props:{champion:string,draft:DraftList}) => {
     {name:'Envoker',role:'BOTTOM',champ:'',icon:''},
     {name:'adc',role:'SUPPORT',champ:'',icon:''}
   ]
-  
+  /*
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
@@ -30,10 +30,10 @@ export const RoleSelect = (props:{champion:string,draft:DraftList}) => {
     share:true, 
     retryOnError: true,
     shouldReconnect: () => true
-    })
+    })*/
     
     const ChampAssignments = () => {
-      const handleSelection = (e:React.ChangeEvent<HTMLSelectElement>) => {
+      const handleSelection = (e:any) => {
         setPosition(e.target.value[0])
         const newDraft = {...props.draft}
         //look for the index somehow
@@ -44,7 +44,7 @@ export const RoleSelect = (props:{champion:string,draft:DraftList}) => {
 
       return(
         <div className="champ-assignments">
-          <select className='summoner-selection' onChange={(e)=>setPosition(e.target.value)}>
+          <select className='summoner-selection' onChange={(e)=>handleSelection(e.target.value)}>
             <option value={[summoners[0].role,summoners[0].name]}>{`${summoners[0].name}`}</option>
             <option value={[summoners[1].role,summoners[1].name]}>{`${summoners[1].name}`}</option>
             <option value={[summoners[2].role,summoners[2].name]}>{`${summoners[2].name}`}</option>
