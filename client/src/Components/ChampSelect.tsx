@@ -298,7 +298,7 @@ export const ChampSelect = (props:any) => {
             newDraft.redPicks[3] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
-          case 17: {
+          case 17:   {
             newDraft.bluePicks[3] = {name: '', role: '',champ:champion[0],icon:champion[1]}
             break
           }
