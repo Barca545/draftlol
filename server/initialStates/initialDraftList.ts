@@ -15,11 +15,11 @@ export const initialDraftList:DraftList = {
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
     bluePicks: [
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
 
     ],
     redBans: [
@@ -30,11 +30,11 @@ export const initialDraftList:DraftList = {
         {champ:null,icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
     redPicks: [
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
-        {name:'', role: '', champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
+        {summoner:null, champ:'',icon:"https://draftlol.dawe.gg/rectangle.png"},
     ],
     turnNumber: 0,
     turn: 'Blue',
@@ -44,4 +44,12 @@ export const initialDraftList:DraftList = {
     midList:initalMid,
     bottomList:intialBottom,
     supportList:initialSupport,
+    ///TEST PLAYERS
+    players:[
+        {name:'Fish',role:'TOP'},
+        {name:'Ouken',role:'JUNGLE'},
+        {name:'HappyBlueGuy',role:'MIDDLE'},
+        {name:'Envoker',role:'BOTTOM'},
+        {name:'adc',role:'SUPPORT'},
+    ]
 }

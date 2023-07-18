@@ -255,27 +255,27 @@ export const ChampSelect = (props:any) => {
             break
           }
           case 6: {
-            newDraft.bluePicks[0] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[0] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 7: {
-            newDraft.redPicks[0] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[0] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 8: {
-            newDraft.redPicks[1] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[1] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 9: {
-            newDraft.bluePicks[1] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[1] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 10: {
-            newDraft.bluePicks[2] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[2] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 11: {
-            newDraft.redPicks[2] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[2] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 12: {
@@ -295,19 +295,19 @@ export const ChampSelect = (props:any) => {
             break
           }
           case 16: {
-            newDraft.redPicks[3] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[3] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 17:   {
-            newDraft.bluePicks[3] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[3] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 18: {
-            newDraft.bluePicks[4] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.bluePicks[4] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
           case 19: {
-            newDraft.redPicks[4] = {name: '', role: '',champ:champion[0],icon:champion[1]}
+            newDraft.redPicks[4] = {summoner:null,champ:champion[0],icon:champion[1]}
             break
           }
         }
