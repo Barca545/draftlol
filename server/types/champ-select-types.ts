@@ -1,18 +1,22 @@
+export interface Summoner {
+    name: string,
+    role: 'TOP'|'JUNGLE'|'MIDDLE'|'BOTTOM'|'SUPPORT'
+  }
+
 export interface Ban {
     champ: string | null,
     icon: string 
 }
 
-export interface Summoner {
-    name: string,
-    role: string,
+export interface Pick {
+    summoner: Summoner|null 
     champ: string,
     icon: string,
 }
 
 export interface DraftList{
-    bluePicks: Summoner[],
-    redPicks: Summoner[],
+    bluePicks: Pick[],
+    redPicks: Pick[],
     redBans: Ban[],
     blueBans: Ban[],
     turnNumber: number,
@@ -23,6 +27,7 @@ export interface DraftList{
     midList:string[][],
     bottomList:string[][],
     supportList:string[][],
+    players:Summoner[]
 }
 
 export interface ChampSelection {
