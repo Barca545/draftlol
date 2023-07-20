@@ -45,7 +45,14 @@ export const initialDraftList:DraftList = {
     bottomList:intialBottom,
     supportList:initialSupport,
     ///TEST PLAYERS
-    players:[
+    BluePlayers: [
+        {name:'Palco',role:'TOP'},
+        {name:'Dink',role:'JUNGLE'},
+        {name:'Avin',role:'MIDDLE'},
+        {name:'Skarf',role:'BOTTOM'},
+        {name:'Alson',role:'SUPPORT'},
+    ],
+    RedPlayers:[
         {name:'Fish',role:'TOP'},
         {name:'Ouken',role:'JUNGLE'},
         {name:'HappyBlueGuy',role:'MIDDLE'},
