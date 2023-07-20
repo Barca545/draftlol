@@ -10,7 +10,7 @@ import bot_icon from '../Assets/lane-icons/bot_icon.png'
 import support_icon from '../Assets/lane-icons/support_icon.png'
 import { LockIn } from './LockIn'
 
-export const ChampSelect = (props:any) => {
+export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => {
   const [draft, setDraft] = useState<DraftList|null>(null)
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [champList,setChampList] = useState(initalAllChamps)
@@ -348,19 +348,6 @@ export const ChampSelect = (props:any) => {
     else {return(<></>)}
   }
   
-  /*const LockIn = () =>{
-    if (isDraft(draft)) {
-      return(
-        <input className="lock-button" value={'LOCK IN'} type="button" onClick={()=>handleConfirm()}/>
-      )
-    }
-    else {
-      return(
-        <input className="lock-button" value={'LOCK IN'} type="button"/>
-      )
-    }
-  }*/
-
   if (isDraft(draft))  {
     return (
       <div className='champ-select'>
@@ -370,7 +357,7 @@ export const ChampSelect = (props:any) => {
         </div>
         <ChampList/>
         <div className="champ-select-footer">
-          <LockIn selection={selection} draft={draft}/>
+          <LockIn selection={selection} side={props.side} draft={draft}/>
         </div>
       </div>
     )  

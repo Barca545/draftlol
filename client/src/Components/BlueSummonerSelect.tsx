@@ -3,9 +3,7 @@ import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
 import {Summoner, DraftList} from "../App/Types/champ-select-types";
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 
-//blueside ig I need one for red
-//need to make two player arrays in the draftlist
-export const BlueSummonerSelect = (props:{players:Summoner[],draft:DraftList,champName:string, side:'Blue'|'Red'}) => {
+export const BlueSummonerSelect = (props:{players:Summoner[],draft:DraftList,champName:string}) => {
 const [player, setPlayer] = useState(props.players[0])
 const [draft,setDraft] = useState<DraftList>(props.draft)
 
@@ -15,7 +13,6 @@ const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
   onMessage: (message:WebSocketEventMap['message']) => {
     let data:DraftList = JSON.parse(message.data)
     setDraft(data)
-    console.log(data.bluePicks)
   },
   share:true, 
   retryOnError: true,

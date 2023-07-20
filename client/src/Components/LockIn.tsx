@@ -4,18 +4,10 @@ import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
 import { DraftList,isDraft } from "../App/Types/champ-select-types";
 import { RoleSelect } from "./RoleSelect";
 
-///pass in selection as a prop
-export const LockIn = (props:{selection:string[],draft:DraftList}) => {
-  //const [draft, setDraft] = useState<DraftList>(props.draft)
-  const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
+export const LockIn = (props:{selection:string[],draft:DraftList, side:'Blue'|'Red'|'Done'}) => {
   const [show,setShow] = useState(false)
+  const [confirmedDraft, setConfirmedDraft] = useState(false)
 
-  useEffect(()=>{
-    console.log(props.selection)
-    console.log(props.draft)
-  },[props.selection])
-  
-  
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
       onOpen: () => console.log('connection opened'),
       onClose: () => console.log('connection closed'),
@@ -155,18 +147,16 @@ export const LockIn = (props:{selection:string[],draft:DraftList}) => {
         )
       }
       else{ 
-        ///bind the show role select to the onclick here
-        if(show===true){
+        if(show===true&&confirmedDraft===false){
           return(
             <div>
-              <input className="lock-button" value={'FINISH'} type="button" onClick={()=>setShow(!show)}/>
-              <RoleSelect champion="test" draft={props.draft}/>
+              <RoleSelect onClose={()=>{setShow(false);setConfirmedDraft(true)}} show={show} side={props.side} draft={props.draft}/>
             </div>
           )
         }
         else{
           return(
-            <input className="lock-button" value={'DONE'} type="button" onClick={()=>setShow(!show)}/>
+            <></>
           )
         }
       }

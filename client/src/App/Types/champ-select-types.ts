@@ -1,6 +1,6 @@
 export interface Summoner {
     name: string,
-    role: 'TOP'|'JUNGLE'|'MIDDLE'|'BOTTOM'|'SUPPORT'
+    role: string
   }
 
 export interface Ban {
@@ -27,7 +27,8 @@ export interface DraftList{
     midList:string[][],
     bottomList:string[][],
     supportList:string[][],
-    players:Summoner[]
+    BluePlayers:Summoner[],
+    RedPlayers:Summoner[]
 }
 
 export function isDraft(requestBody: DraftList| null):requestBody is DraftList {
