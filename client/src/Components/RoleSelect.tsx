@@ -17,7 +17,6 @@ export const RoleSelect = (props:{onClose:any, draft:DraftList, show:boolean, si
               </div>
             )})}
           <input type="button" value={'CONFIRM DRAFT'} onClick={props.onClose}/>
-          <input type="button" value={'RESET'}/>
         </div>
       </div>
     ) 
@@ -34,7 +33,6 @@ export const RoleSelect = (props:{onClose:any, draft:DraftList, show:boolean, si
               </div>
             )})}
           <input type="button"  value={'CONFIRM DRAFT'} onClick={props.onClose}/>
-          <input type="button" value={'RESET'}/>
         </div>
       </div>
     ) 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
 import { DraftList,isDraft } from "../App/Types/champ-select-types";
@@ -16,8 +16,6 @@ export const LockIn = (props:{selection:string[],draft:DraftList, side:'Blue'|'R
       shouldReconnect: () => true
       })
 
-   ///something with this is causing it to disconnect
-   //it is expecting a timer object for some reason   
   const handleConfirm = () => {
       ///needs to increment pick index
       if (isDraft(props.draft)){
@@ -154,9 +152,10 @@ export const LockIn = (props:{selection:string[],draft:DraftList, side:'Blue'|'R
             </div>
           )
         }
+        else if (confirmedDraft===true) {return(<></>)}
         else{
           return(
-            <></>
+            <input className="lock-button" value={'FINISH'} type="button" onClick={()=>setShow(true)}/>
           )
         }
       }
