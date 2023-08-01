@@ -132,7 +132,6 @@ export const LockIn = (props:{selection:string[],draft:DraftList, side:'Blue'|'R
           }
         }
         //setOutgoingDraft(newDraft)
-        console.log(newDraft)
         sendMessage(JSON.stringify(newDraft))
         
       }

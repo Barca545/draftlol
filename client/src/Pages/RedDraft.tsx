@@ -7,17 +7,33 @@ import { CountdownTimer } from "../Components/CountdownTimer";
 import { TeamBanner } from "../Components/team-banner";
 import '../Styles/draft-styles.scss'
 import { useState } from "react"
+import { DraftList } from "../App/Types/champ-select-types";
+import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
+import { initalAllChamps } from "../Components/initialStates/initalAllChamps";
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
+import { initialDraftList } from "../Components/initialStates/initialDraftList";
 
-///think I need to make the confirm button it's own component
 export const RedDraft = () => {
-  const [turn,setTurn] = useState(19)
-  const [show,setShow] = useState(false)
+  const [draft, setDraft] = useState<DraftList>(initialDraftList)
+  const [champList,setChampList] = useState(initalAllChamps)
+  
+  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
+    onOpen: () => console.log('connection opened'),
+    onClose: () => console.log('connection closed'),
+    onMessage: (message:WebSocketEventMap['message']) => {
+      let data:DraftList = JSON.parse(message.data)
+      setDraft(data)
+      setChampList(data.champList)
+    },
+    share:true, 
+    retryOnError: true,
+    shouldReconnect: () => true
+    })
 
-  if(turn===19){
     return(
       <div className="draft-container">
         <div className="draft-container-header">
-          <CountdownTimer/>
+          <CountdownTimer draftlist={draft}/>
           <TeamBanner side={'blue'}/>
           <TeamBanner side={'red'}/>
         </div>
@@ -26,25 +42,6 @@ export const RedDraft = () => {
         <RedPicks/>
         <BlueBans/>
         <RedBans/>
-        <input type="button" value={'SHOW'} onClick={()=>setShow(!show)}/>
       </div>
     )
   }
-  else{
-    return(
-      <div className="draft-container">
-        <div className="draft-container-header">
-          <CountdownTimer/>
-          <TeamBanner side={'blue'}/>
-          <TeamBanner side={'red'}/>
-        </div>
-        <ChampSelect side={'Red'} opposite={'Blue'}/>
-        <BluePicks/>
-        <RedPicks/>
-        <BlueBans/>
-        <RedBans/>
-        <input type="button" value={'SHOW'} onClick={()=>setShow(!show)}/>
-      </div>
-    )
-  }
-}
