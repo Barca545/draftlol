@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import {combineReducers } from '@reduxjs/toolkit'
 import { apiSlice } from "./Slices/apiSlice";
 import  PickBanReducer  from "./Slices/pickBanSlice";
+import draftlistReducer from "./Slices/draftlistSlice";
 
 export const store =  configureStore({
     reducer:{
         [apiSlice.reducerPath]: apiSlice.reducer,
-        pickBanIndex: PickBanReducer
+        pickBanIndex: PickBanReducer,
+        draftlist:draftlistReducer
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware),
   })
