@@ -1,4 +1,3 @@
-import { useState,useEffect } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
 import { DraftList,isDraft } from "../App/Types/champ-select-types";
@@ -129,9 +128,9 @@ export const LockButton = (props:{draft:DraftList,selection:string[]}) => {
         }
         //setOutgoingDraft(newDraft)
         sendMessage(JSON.stringify(newDraft))
-        
       }
     }
+    
     return (
       <input className="lock-button" value={'LOCK IN'} type="button" onClick={()=>handleConfirm()}/>
     )

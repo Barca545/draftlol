@@ -1,11 +1,16 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { initialDraftList } from "../../Components/initialStates/initialDraftList";
-import { DraftList } from "../Types/champ-select-types";
+import { DraftList, Ban} from "../Types/champ-select-types";
 
 const initialState:DraftList = initialDraftList
 
-export const DraftListSlice = createSlice({
+interface BanSelection {
+  index:number,
+  ban: Ban
+}
+
+export const draftListSlice = createSlice({
   name: 'draftList',
   initialState: initialState,
   reducers: {
@@ -17,7 +22,7 @@ export const DraftListSlice = createSlice({
       state.bottomList = state.bottomList.filter((item)=>item[0]!==action.payload[0])
       state.supportList = state.supportList.filter((item)=>item[0]!==action.payload[0])
       
-      if (state.turnNumber<=19){
+      if (state.turnNumber<19){
         switch(state.turn){
           case 'Blue': {
             state.turn = 'Red'
@@ -35,9 +40,23 @@ export const DraftListSlice = createSlice({
         state.turn = 'Done'
       }
     },
+    setDraftList: (state,action: PayloadAction<DraftList>) => {
+      state = action.payload
+    },
+    setBlueBan: (state,action: PayloadAction<BanSelection>) => {
+      state.blueBans[action.payload.index] = action.payload.ban
+    },
+    setRedBan: (state,action: PayloadAction<BanSelection>) => {
+      state.redBans[action.payload.index] = action.payload.ban
+    },
   }
 })
-export const {} = DraftListSlice.actions
-export default DraftListSlice.reducer
+
+export default draftListSlice.reducer
+export const {setDraftList,setSelection,setBlueBan,setRedBan} = draftListSlice.actions
 
 ///selectors
+export const getDraftList = (state:RootState) => {
+  console.log(state.draftlist)
+  return state.draftlist
+}

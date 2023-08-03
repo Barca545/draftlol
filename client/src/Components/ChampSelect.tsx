@@ -9,9 +9,14 @@ import mid_icon from '../Assets/lane-icons/mid_icon.png'
 import bot_icon from '../Assets/lane-icons/bot_icon.png'
 import support_icon from '../Assets/lane-icons/support_icon.png'
 import { LockIn } from './LockIn'
+import { useAppDispatch,useAppSelector } from '../App/hooks'
+import { getDraftList, setDraftList, setBlueBan } from '../App/Slices/draftlistSlice'
+
 
 export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => {
-  const [draft, setDraft] = useState<DraftList|null>(null)
+  const dispatch = useAppDispatch()
+  const draft = useAppSelector(getDraftList)
+  
   const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
   const [champList,setChampList] = useState(initalAllChamps)
   const [input,setInput] = useState('')
@@ -29,8 +34,7 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
       let data:DraftList = JSON.parse(message.data)
-      setDraft(data)
-      setChampList(data.champList)
+      dispatch(setDraftList(data))
     },
     share:true, 
     retryOnError: true,
@@ -40,105 +44,6 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
   useEffect(()=>{
     if (isDraft(outgoingDraft)){sendMessage(JSON.stringify(outgoingDraft))}
   },[outgoingDraft])
-
- /* const handleConfirm = () => {
-    ///needs to increment pick index
-    if (isDraft(draft) && selection!==null){
-      const newDraft:DraftList = {...draft,
-        turnNumber: draft.turnNumber+1,
-        champList:[...draft.champList.filter((item)=>item[0]!==selection[0])],
-        topList: [...draft.topList.filter((item)=>item[0]!==selection[0])],
-        jgList:[...draft.jgList.filter((item)=>item[0]!==selection[0])],
-        midList:[...draft.midList.filter((item)=>item[0]!==selection[0])],
-        bottomList:[...draft.bottomList.filter((item)=>item[0]!==selection[0])],
-        supportList:[...draft.supportList.filter((item)=>item[0]!==selection[0])]
-      }
-      switch(draft.turnNumber) {
-        case 0: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 1: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 2: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 3: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 4: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 5: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 6: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 7: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 8: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 9: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 10: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 11: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 12: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 13: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 14: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 15: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 16: {
-          newDraft.turn = 'Blue'
-          break
-        }
-        case 17: {
-          newDraft.turn = 'Done'
-          break
-        }
-        case 18: {
-          newDraft.turn = 'Red'
-          break
-        }
-        case 19: {
-          newDraft.turn = 'Done'
-          break
-        }
-      }
-      setOutgoingDraft(newDraft)
-      console.log(newDraft)
-    }
-  }*/
 
   const LaneFilter = () => {
     if (isDraft(draft)) {
@@ -226,93 +131,95 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
 
   const ChampList = () => {
     const handleChampionSelection = (champion:string[]) => {
-      setSelection(champion)
-      if (isDraft(draft)){
-        const newDraft:DraftList = {...draft}
-        switch(draft.turnNumber) {
-          case 0: {
-            newDraft.blueBans[0] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 1: {
-            newDraft.redBans[0] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 2: {
-            newDraft.blueBans[1] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 3: {
-            newDraft.redBans[1] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 4: {
-            newDraft.blueBans[2] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 5: {
-            newDraft.redBans[2] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 6: {
-            newDraft.bluePicks[0] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 7: {
-            newDraft.redPicks[0] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 8: {
-            newDraft.redPicks[1] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 9: {
-            newDraft.bluePicks[1] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 10: {
-            newDraft.bluePicks[2] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 11: {
-            newDraft.redPicks[2] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 12: {
-            newDraft.redBans[3] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 13: {
-            newDraft.blueBans[3] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 14: {
-            newDraft.redBans[4] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 15: {
-            newDraft.blueBans[4] = {champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 16: {
-            newDraft.redPicks[3] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 17:   {
-            newDraft.bluePicks[3] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 18: {
-            newDraft.bluePicks[4] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
-          case 19: {
-            newDraft.redPicks[4] = {summoner:null,champ:champion[0],icon:champion[1]}
-            break
-          }
+      //this requires doubleclicks to rerender
+      switch(draft.turnNumber) {
+        case 0: {
+          dispatch(setBlueBan({index:0,ban:{champ:champion[0],icon:champion[1]}}))
+          //console.log(draft.blueBans[0])
+          break
         }
-        setOutgoingDraft(newDraft)
-      } 
+        
+        /*
+        case 1: {
+          newDraft.redBans[0] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 2: {
+          newDraft.blueBans[1] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 3: {
+          newDraft.redBans[1] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 4: {
+          newDraft.blueBans[2] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 5: {
+          newDraft.redBans[2] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 6: {
+          newDraft.bluePicks[0] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 7: {
+          newDraft.redPicks[0] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 8: {
+          newDraft.redPicks[1] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 9: {
+          newDraft.bluePicks[1] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 10: {
+          newDraft.bluePicks[2] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 11: {
+          newDraft.redPicks[2] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 12: {
+          newDraft.redBans[3] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 13: {
+          newDraft.blueBans[3] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 14: {
+          newDraft.redBans[4] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 15: {
+          newDraft.blueBans[4] = {champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 16: {
+          newDraft.redPicks[3] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 17:   {
+          newDraft.bluePicks[3] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 18: {
+          newDraft.bluePicks[4] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        case 19: {
+          newDraft.redPicks[4] = {summoner:null,champ:champion[0],icon:champion[1]}
+          break
+        }
+        */
+      }
+      //this is not updating because the draft is not updating
+      sendMessage(JSON.stringify(draft))
     }
     
     if (isDraft(draft)) {

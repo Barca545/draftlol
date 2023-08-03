@@ -25,8 +25,7 @@ export const CountdownTimer = (props:{draftlist:DraftList}) => {
     shouldReconnect: () => true
   })
   
-  //this needs to change the side to the opposite side
-  //I might need to change how this works tbh
+//put this inside the resets on zero and get rid of the argument
   const handleReset = async (sleepTimer:number) => {
     await sleep(sleepTimer)
     sendMessage(JSON.stringify({seconds:60}))
@@ -43,7 +42,7 @@ export const CountdownTimer = (props:{draftlist:DraftList}) => {
     }  
   }
   
-  
+
   /*this needs to send it to the next turn
   - easiest way to do this might be a store but perhaps there is a way that does not require as much refactoring
   - one solution might be to have the lock in component open up a timer websocket 
@@ -60,16 +59,7 @@ export const CountdownTimer = (props:{draftlist:DraftList}) => {
       return () => clearInterval(timerId)
     }
   },[time])
-
-  //reset the timer on a selection
-  useEffect(() => {
-    console.log(props.draftlist.turn)
-    console.log(turn)
-    if (props.draftlist.turn!==turn){
-      handleReset(0)
-    }
-  },[props.draftlist.turn])
-  
+ 
   if(time?.seconds!=undefined){
     return (
       <div className='timer'>
