@@ -6,8 +6,6 @@ import { DraftList } from '../App/Types/champ-select-types'
 
 export const CountdownTimer = (props:{draftlist:DraftList}) => { 
   const [time, setTime] = useState<Timer|null>(null)
-  const [draft,setDraft] = useState(props.draftlist)
-  const [turn,setTurn] = useState<"Red" | "Blue" | "Done">("Blue")
 
   const sleep = (seconds:number ) => new Promise(
     resolve => setTimeout(resolve, seconds*1000)

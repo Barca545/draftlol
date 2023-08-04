@@ -202,7 +202,7 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red', draf
       if (props.draft.turn===props.side) {
         return(
           <div className='champ-list'>
-            {champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())).map((champion)=>{
+            {props.draft.champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())).map((champion)=>{
               return(
                 <div 
                   className='champion' 

@@ -1,7 +1,29 @@
 import { DraftList,isDraft } from "../App/Types/champ-select-types";
 import { SendMessage } from 'react-use-websocket'
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
+import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
+import { useState, useEffect} from "react";
+import { Timer } from "../App/Types/champ-select-types";
 
 export const LockButton = (props:{draft:DraftList,selection:string[],updateDraft:SendMessage}) => {
+  const [time, setTime] = useState<Timer|null>(null)
+
+  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/timer`, {
+    onOpen: () => console.log('connection opened'),
+    onClose: () => console.log('connection closed'),
+    onMessage: (message:WebSocketEventMap['message']) => {
+      let timer:Timer = JSON.parse(message.data)
+      setTime(timer)
+    },
+    share:true, 
+    retryOnError: true,
+    shouldReconnect: () => true
+  })
+
+  useEffect(()=>{
+    if (time?.seconds===0){handleLock()}
+  },[time])
+
   const handleLock = () => {
     ///needs to increment pick index
     if (isDraft(props.draft)){
@@ -117,8 +139,8 @@ export const LockButton = (props:{draft:DraftList,selection:string[],updateDraft
           break
         }
       }
-      //setOutgoingDraft(newDraft)
       props.updateDraft(JSON.stringify(newDraft))
+      sendMessage(JSON.stringify({seconds:60}))
     }
   }
 
