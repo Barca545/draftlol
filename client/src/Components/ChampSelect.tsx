@@ -1,24 +1,16 @@
 import {useEffect, useState } from 'react'
-import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
-import { BASE_URL,MATCH_ID } from '../App/Slices/baseurl'
 import { DraftList, isDraft} from '../App/Types/champ-select-types'
-import { initalAllChamps } from './initialStates/initalAllChamps' 
 import top_icon from '../Assets/lane-icons/top_icon.png'
 import jungle_icon from '../Assets/lane-icons/jungle_icon.png'
 import mid_icon from '../Assets/lane-icons/mid_icon.png'
 import bot_icon from '../Assets/lane-icons/bot_icon.png'
 import support_icon from '../Assets/lane-icons/support_icon.png'
 import { LockIn } from './LockIn'
-import { useAppDispatch,useAppSelector } from '../App/hooks'
-import { getDraftList, setDraftList, setBlueBan } from '../App/Slices/draftlistSlice'
+import { SendMessage } from 'react-use-websocket'
 
 
-export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => {
-  const dispatch = useAppDispatch()
-  const draft = useAppSelector(getDraftList)
-  
-  const [outgoingDraft, setOutgoingDraft] = useState<DraftList|null>(null)
-  const [champList,setChampList] = useState(initalAllChamps)
+export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red', draft:DraftList, updateDraft:SendMessage}) => {
+  const [champList,setChampList] = useState(props.draft.champList)
   const [input,setInput] = useState('')
   const [selection, setSelection] = useState<string[]>([])
   const [isActive,setIsActive] = useState({
@@ -28,25 +20,13 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
     bot: 'lane-button',
     sup: 'lane-button'
   })
-  ///not sure if this being blueside/redside is affecting it
-  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
-    onOpen: () => console.log('connection opened'),
-    onClose: () => console.log('connection closed'),
-    onMessage: (message:WebSocketEventMap['message']) => {
-      let data:DraftList = JSON.parse(message.data)
-      dispatch(setDraftList(data))
-    },
-    share:true, 
-    retryOnError: true,
-    shouldReconnect: () => true
-    })
 
   useEffect(()=>{
-    if (isDraft(outgoingDraft)){sendMessage(JSON.stringify(outgoingDraft))}
-  },[outgoingDraft])
+    setChampList(props.draft.champList)
+  },[props.draft.champList])
 
   const LaneFilter = () => {
-    if (isDraft(draft)) {
+    if (isDraft(props.draft)) {
       const handleFilter = (list:string[][],lane:string) => {
         if (champList!==list) {
           switch (lane) {
@@ -103,7 +83,7 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
           }
         }
         else{
-          setChampList(draft.champList)
+          setChampList(props.draft.champList)
           setIsActive({
             top: 'lane-button',
             jg: 'lane-button',
@@ -116,11 +96,11 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
 
       return(
         <div className='lane-filter' >
-          <img src={top_icon} className={isActive.top} onClick={()=>{handleFilter(draft.topList,'Top')}}/>
-          <img src={jungle_icon} className={isActive.jg} onClick={()=>{handleFilter(draft.jgList,'Jg')}}/>
-          <img src={mid_icon} className={isActive.mid} onClick={()=>{handleFilter(draft.midList,'Mid')}}/>
-          <img src={bot_icon} className={isActive.bot} onClick={()=>{handleFilter(draft.bottomList,'Bot')}}/>
-          <img src={support_icon} className={isActive.sup} onClick={()=>{handleFilter(draft.supportList,'Sup')}}/>
+          <img src={top_icon} className={isActive.top} onClick={()=>{handleFilter(props.draft.topList,'Top')}}/>
+          <img src={jungle_icon} className={isActive.jg} onClick={()=>{handleFilter(props.draft.jgList,'Jg')}}/>
+          <img src={mid_icon} className={isActive.mid} onClick={()=>{handleFilter(props.draft.midList,'Mid')}}/>
+          <img src={bot_icon} className={isActive.bot} onClick={()=>{handleFilter(props.draft.bottomList,'Bot')}}/>
+          <img src={support_icon} className={isActive.sup} onClick={()=>{handleFilter(props.draft.supportList,'Sup')}}/>
         </div>
       )
     }
@@ -131,15 +111,13 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
 
   const ChampList = () => {
     const handleChampionSelection = (champion:string[]) => {
-      //this requires doubleclicks to rerender
-      switch(draft.turnNumber) {
+      const newDraft:DraftList = {...props.draft}
+      setSelection(champion)
+      switch(props.draft.turnNumber) {
         case 0: {
-          dispatch(setBlueBan({index:0,ban:{champ:champion[0],icon:champion[1]}}))
-          //console.log(draft.blueBans[0])
+          newDraft.blueBans[0] = {champ:champion[0],icon:champion[1]}
           break
         }
-        
-        /*
         case 1: {
           newDraft.redBans[0] = {champ:champion[0],icon:champion[1]}
           break
@@ -216,14 +194,12 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
           newDraft.redPicks[4] = {summoner:null,champ:champion[0],icon:champion[1]}
           break
         }
-        */
       }
-      //this is not updating because the draft is not updating
-      sendMessage(JSON.stringify(draft))
+      props.updateDraft(JSON.stringify(newDraft))
     }
     
-    if (isDraft(draft)) {
-      if (draft.turn===props.side) {
+    if (isDraft(props.draft)) {
+      if (props.draft.turn===props.side) {
         return(
           <div className='champ-list'>
             {champList.filter(array => array[0].toLowerCase().includes(input.toLowerCase())).map((champion)=>{
@@ -255,7 +231,7 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
     else {return(<></>)}
   }
   
-  if (isDraft(draft))  {
+  if (isDraft(props.draft))  {
     return (
       <div className='champ-select'>
         <div className='champ-select-header'>
@@ -264,11 +240,12 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red'}) => 
         </div>
         <ChampList/>
         <div className="champ-select-footer">
-          <LockIn selection={selection} side={props.side} draft={draft}/>
+          <LockIn selection={selection} side={props.side} draft={props.draft} updateDraft={props.updateDraft}/>
         </div>
       </div>
     )  
   }
   else {
-    return (<></>)}
+    return (<></>)
+  }
 }

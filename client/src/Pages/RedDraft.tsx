@@ -9,21 +9,18 @@ import '../Styles/draft-styles.scss'
 import { useState } from "react"
 import { DraftList } from "../App/Types/champ-select-types";
 import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
-import { initalAllChamps } from "../Components/initialStates/initalAllChamps";
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 import { initialDraftList } from "../Components/initialStates/initialDraftList";
 
 export const RedDraft = () => {
   const [draft, setDraft] = useState<DraftList>(initialDraftList)
-  const [champList,setChampList] = useState(initalAllChamps)
   
-  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
+  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/redside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
       let data:DraftList = JSON.parse(message.data)
       setDraft(data)
-      setChampList(data.champList)
     },
     share:true, 
     retryOnError: true,
@@ -37,11 +34,11 @@ export const RedDraft = () => {
           <TeamBanner side={'blue'}/>
           <TeamBanner side={'red'}/>
         </div>
-        <ChampSelect side={'Red'} opposite={'Blue'}/>
-        <BluePicks/>
-        <RedPicks/>
-        <BlueBans/>
-        <RedBans/>
+        <ChampSelect side={'Red'} opposite={'Blue'} draft={draft} updateDraft={sendMessage}/>
+        <BluePicks draft={draft}/>
+        <RedPicks draft={draft}/>
+        <BlueBans draft={draft}/>
+        <RedBans draft={draft}/>
       </div>
     )
   }

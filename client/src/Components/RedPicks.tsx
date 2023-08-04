@@ -1,45 +1,24 @@
-import { isDraft,DraftList } from "../App/Types/champ-select-types"
-import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl"
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket"
-import { useState } from "react"
+import {DraftList } from "../App/Types/champ-select-types"
+import none_selected from '../Assets/champ-select-icons/none_selected.webp'
 
-export const RedPicks = () => {
-  const [draft, setDraft] = useState<DraftList|null>(null)
-  
-  useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
-    onOpen: () => console.log('connection opened'),
-    onClose: () => console.log('connection closed'),
-    onMessage: (message:WebSocketEventMap['message']) => {
-      let data:DraftList = JSON.parse(message.data)
-      setDraft(data)
-    },
-    share:true, 
-    retryOnError: true,
-    shouldReconnect: () => true
-    })   
-  
-  if (isDraft(draft)) {
-    return(
-      <div className="red-picks">
-        <div className='red-summoner'>
-          <img className='champselect-image' src={draft.redPicks[0].icon} alt=''/>
-        </div>
-        <div className='red-summoner'>
-          <img className='champselect-image' src={draft.redPicks[1].icon} alt=''/>
-        </div>
-        <div className='red-summoner'>
-          <img className='champselect-image' src={draft.redPicks[2].icon} alt=''/>
-        </div>
-        <div className='red-summoner'>
-          <img className='champselect-image' src={draft.redPicks[3].icon} alt=''/>   
-        </div>
-        <div className='red-summoner'>
-          <img className='champselect-image' src={draft.redPicks[4].icon} alt=''/>
-        </div>
+export const RedPicks = (props:{draft:DraftList}) => {
+  return(
+    <div className="red-picks">
+      <div className='summoner'>
+        {props.draft?.redPicks[0]!==undefined ? <img className='champselect-image' src={props.draft?.redPicks[0].icon} alt=''/>:<img className='ban-image' src={none_selected} alt=''/>}
       </div>
-    )
-    }
-    else{
-      return(<></>)
-    }
-  }
+      <div className='summoner'>
+        {props.draft?.redPicks[1]!==undefined ? <img className='champselect-image' src={props.draft?.redPicks[1].icon} alt=''/>:<img className='ban-image' src={none_selected} alt=''/>}
+      </div>
+      <div className='summoner'>
+        {props.draft?.redPicks[2]!==undefined ? <img className='champselect-image' src={props.draft?.redPicks[2].icon} alt=''/>:<img className='ban-image' src={none_selected} alt=''/>}
+      </div>
+      <div className='summoner'>
+        {props.draft?.redPicks[3]!==undefined ? <img className='champselect-image' src={props.draft?.redPicks[3].icon} alt=''/>:<img className='ban-image' src={none_selected} alt=''/>}
+      </div>
+      <div className='summoner'>
+        {props.draft?.redPicks[4]!==undefined ? <img className='champselect-image' src={props.draft?.redPicks[4].icon} alt=''/>:<img className='ban-image' src={none_selected} alt=''/>}
+      </div>
+    </div>
+  )
+}

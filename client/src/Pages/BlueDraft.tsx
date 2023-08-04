@@ -11,25 +11,23 @@ import { useState} from 'react'
 import { DraftList } from "../App/Types/champ-select-types";
 import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
 import { initialDraftList } from "../Components/initialStates/initialDraftList";
-import { initalAllChamps } from "../Components/initialStates/initalAllChamps";
 
 export const BlueDraft = () => {
   const [draft, setDraft] = useState<DraftList>(initialDraftList)
-  const [champList,setChampList] = useState(initalAllChamps)
-
+  
+  ///not sure if this being blueside/redside is affecting it
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
       let data:DraftList = JSON.parse(message.data)
       setDraft(data)
-      setChampList(data.champList)
     },
     share:true, 
     retryOnError: true,
     shouldReconnect: () => true
     })
-    //eventually only render if draft is a draftlist instead of importing an intial draftlist
+
   return(
     <div className="draft-container">
       <div className="draft-container-header">
@@ -37,11 +35,11 @@ export const BlueDraft = () => {
         <TeamBanner side={'blue'}/>
         <TeamBanner side={'red'}/>
       </div>
-      <ChampSelect side={'Blue'} opposite={'Red'}/>
-      <BluePicks/>
-      <RedPicks/>
-      <BlueBans/>
-      <RedBans/>
+      <ChampSelect side={'Blue'} opposite={'Red'} draft={draft} updateDraft={sendMessage}/>
+      <BluePicks draft={draft}/>
+      <RedPicks draft={draft}/>
+      <BlueBans draft={draft}/>
+      <RedBans draft={draft}/>
     </div>
   )
 }

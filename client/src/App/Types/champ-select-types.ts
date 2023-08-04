@@ -4,7 +4,7 @@ export interface Summoner {
   }
 
 export interface Ban {
-    champ: string|null,
+    champ: string,
     icon: string
 }
 
