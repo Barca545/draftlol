@@ -12,11 +12,11 @@ import { DraftList } from "../App/Types/champ-select-types";
 import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
 import { initialDraftList } from "../Components/initialStates/initialDraftList";
 
-export const BlueDraft = () => {
+export const BlueDraft = (props:{id:string}) => {
   const [draft, setDraft] = useState<DraftList>(initialDraftList)
   
   ///not sure if this being blueside/redside is affecting it
-  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/blueside`, {
+  const {sendMessage} = useWebSocket(`${BASE_URL}/${props.id}/draft/blueside`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {

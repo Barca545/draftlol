@@ -12,7 +12,7 @@ import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
 import { initialDraftList } from "../Components/initialStates/initialDraftList";
 
-export const RedDraft = () => {
+export const RedDraft = (props:{id:string}) => {
   const [draft, setDraft] = useState<DraftList>(initialDraftList)
   
   const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/draft/redside`, {
