@@ -8,6 +8,7 @@ import {RedDraft} from './Pages/RedDraft'
 function App() {  
   //perhaps this page should be the create draft page here
   const [id,setId] = useState<string>('test')
+  
   return (
     <div className="page-container">
       <BrowserRouter>

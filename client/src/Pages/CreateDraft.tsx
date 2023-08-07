@@ -9,7 +9,7 @@ export const CreateDraft = (props:{id:string|null, setId:React.Dispatch<React.Se
   useEffect(()=>{
     console.log(props.id)
   },[props.id])
-
+ 
   const handleCreateGame = () => {
     props.setId(uuid().substring(0,8))
   }

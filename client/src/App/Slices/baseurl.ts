@@ -1,3 +1,3 @@
-export const BASE_URL: string = 'ws://localhost:8080'
-export const HTTP_URL: string = 'https://localhost:8000'
+export const BASE_URL: string = 'http://localhost:8080'
+//this needs to be removed
 export const MATCH_ID = `dsdfdfgdfgdfgg`

@@ -1,24 +1,24 @@
 import {useEffect,useState} from 'react'
 import { Timer, isTimer} from '../App/Types/champ-select-types'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
-import { BASE_URL, MATCH_ID } from '../App/Slices/baseurl'
+import { BASE_URL} from '../App/Slices/baseurl'
 import { DraftList } from '../App/Types/champ-select-types'
 
-export const CountdownTimer = (props:{draftlist:DraftList}) => { 
+export const CountdownTimer = (props:{draftlist:DraftList,id:string}) => { 
   const [time, setTime] = useState<Timer|null>(null)
 
   const sleep = (seconds:number ) => new Promise(
     resolve => setTimeout(resolve, seconds*1000)
   )
 
-  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/timer`, {
+  const {sendMessage} = useWebSocket(`${BASE_URL}/${props.id}/timer`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {
       let timer:Timer = JSON.parse(message.data)
       setTime(timer)
     },
-    share:false, 
+    share:true, 
     retryOnError: true,
     shouldReconnect: () => true
   })

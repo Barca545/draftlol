@@ -1,17 +1,10 @@
-import {WebSocket, WebSocketServer,RawData} from 'ws';
-import {initialDraftList}
- from './initialStates/initialDraftList.js';
-import {v4 as uuidv4} from 'uuid'
-import { DraftList, DraftRequest, Timer } from './types/champ-select-types.js';
-import { isTimer,isDraftlist } from './types/type-guards.js';
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import http from 'http'
+import {createServer} from 'http'
 import cors from 'cors'
 import bodyParser from 'body-parser';
-import { WS_URL, Socket, Connection} from './types/connection-types.js';
-import { isConnection } from './types/type-guards.js';
-import { SocketConnection, Matches, Match } from './types/connectionClass';
+import { Server, Socket } from "socket.io";
+import { Match } from './types/connectionClass';
 
 ///current draftlist state updated whenever a new message comes 
 /*eventuall 
@@ -24,55 +17,48 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
-const server = http.createServer(app)
-const wss = new WebSocketServer({server:server});
+const server = createServer(app)
+const io = new Server(server,{
+  //needed for dev
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  },
+})
 
-const matches = new Matches()
+//actually instead of matches this should maybe
+const matches:Match[] = []
 
-wss.on('connection', (ws:WebSocket,req) => {
-  ws.on('error', console.error);
+io.on('connection', (socket:Socket)=>{
+  //console.log(`User Connected ${socket.id}`)
+  const gameid = socket.handshake.query.gameid
   
-  const urlArray = req.url.split('/')
+  //could separate the timer by having a draft/timer element to the query
+  socket.join(gameid)
 
-  const url:WS_URL = {
-    matchID:urlArray[1],
-    componentid:urlArray[2]
-  }
-  ///needs to add to the same match 
-  matches.addMatch(url.matchID)
-
-  switch (url.componentid) {
-    case 'timer':{
-      const connection = new SocketConnection(ws,'timer',uuidv4())
-      const match = matches.findMatch(url.matchID)
-      match.addTimerConnection(connection)
-      console.log(`Timer: ${connection.id} connnected`)
-      break
-    }
-    case 'draft':{
-      const connection = new SocketConnection(ws,'draft',uuidv4())
-      const match = matches.findMatch(url.matchID)
-      match.addDraftConnection(connection)
-      console.log(`Draft: ${connection.id} connnected`)
-      break
-    }
-  }
+  //how do I have it emit the game stuff
+  io.to(gameid).emit('test')
   
-  ws.on('message', (messageData) => {
-    matches.handleMessage(messageData,url.matchID) 
-  });
+  //possibly move to separate file
+  const handleMessage = () => {
+    //io.to(gameid).emit(draft)
+    //easiest way to do this is use the function I commented out to hold an array of matches and just emit the match corresoponding to the game id 
+    //I feel tho like socket io must have native support for this
+  }
 
-  ws.on('close', (event:CloseEvent)=>{
-    const closeCode = event.code
-  })
-});
+  io.sockets.on('message', () => handleMessage())
+  
+  //this might be unnessecary since rooms mean I can just assign them to a room based on game ID
+  /*
+  if (matches.some((match)=> {return match.id == gameid})){
+  }
+  else {
+    matches.push(new Match(gameid,60))
+    
+  }*/
+})
 
-
-/*app.get('/draftlist', (req:Request, res:Response)=> {
-  ///may have to use JSON.parse on the other end since this is now a JSON string
-  res.send(draftList)
-})*/
-
+//do I need this with Socketio
 server.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  console.log(`⚡️[server]: Server is running at ${port}`);
 });

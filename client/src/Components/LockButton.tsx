@@ -1,14 +1,14 @@
 import { DraftList,isDraft } from "../App/Types/champ-select-types";
 import { SendMessage } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket'
-import { BASE_URL,MATCH_ID } from "../App/Slices/baseurl";
+import { BASE_URL} from "../App/Slices/baseurl";
 import { useState, useEffect} from "react";
 import { Timer } from "../App/Types/champ-select-types";
 
-export const LockButton = (props:{draft:DraftList,selection:string[],updateDraft:SendMessage}) => {
+export const LockButton = (props:{draft:DraftList,selection:string[],id:string,updateDraft:SendMessage}) => {
   const [time, setTime] = useState<Timer|null>(null)
 
-  const {sendMessage} = useWebSocket(`${BASE_URL}/${MATCH_ID}/timer`, {
+  const {sendMessage} = useWebSocket(`${BASE_URL}/${props.id}/timer`, {
     onOpen: () => console.log('connection opened'),
     onClose: () => console.log('connection closed'),
     onMessage: (message:WebSocketEventMap['message']) => {

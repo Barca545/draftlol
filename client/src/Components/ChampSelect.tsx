@@ -9,7 +9,7 @@ import { LockIn } from './LockIn'
 import { SendMessage } from 'react-use-websocket'
 
 
-export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red', draft:DraftList, updateDraft:SendMessage}) => {
+export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red', id:string, draft:DraftList, updateDraft:SendMessage}) => {
   const [champList,setChampList] = useState(props.draft.champList)
   const [input,setInput] = useState('')
   const [selection, setSelection] = useState<string[]>([])
@@ -240,7 +240,7 @@ export const ChampSelect = (props:{side:'Blue'|'Red',opposite:'Blue'|'Red', draf
         </div>
         <ChampList/>
         <div className="champ-select-footer">
-          <LockIn selection={selection} side={props.side} draft={props.draft} updateDraft={props.updateDraft}/>
+          <LockIn id={props.id} selection={selection} side={props.side} draft={props.draft} updateDraft={props.updateDraft}/>
         </div>
       </div>
     )  
